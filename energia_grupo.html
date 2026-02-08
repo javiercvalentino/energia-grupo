@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Energía del Grupo</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --muted:#97a3b6;
+      --text:#e8eefc;
+      --line:#233055;
+      --chip:#1a2647;
+
+      --o:#FFD966;      /* 🟠 */
+      --y:#FFF2CC;      /* 🟡 */
+      --g:#C6E0B4;      /* 🟢 */
+      --gg:#A9D08E;     /* 🟢🔥 */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 10%, #162447 0%, var(--bg) 55%);
+      color:var(--text);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:20px}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;}
+    h1{font-size:18px; margin:0; letter-spacing:.2px}
+    .sub{font-size:12px; color:var(--muted)}
+    .row{display:grid; grid-template-columns: 360px 1fr; gap:14px}
+    @media (max-width: 980px){ .row{grid-template-columns:1fr} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      border-radius:16px;
+      padding:14px;
+    }
+    .card h2{font-size:13px; margin:0 0 10px 0; color:#dbe6ff}
+    label{font-size:12px; color:var(--muted); display:block; margin-bottom:6px}
+    input, select, button, textarea{
+      width:100%;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(17,26,46,.75);
+      color:var(--text);
+      padding:10px 11px;
+      outline:none;
+    }
+    input::placeholder{color:#6f7c95}
+    button{
+      cursor:pointer;
+      background: linear-gradient(180deg, rgba(110,168,255,.25), rgba(110,168,255,.12));
+      border:1px solid rgba(110,168,255,.30);
+      font-weight:600;
+    }
+    button.secondary{
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:600;
+    }
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .hr{height:1px; background: rgba(255,255,255,.08); margin:12px 0}
+    .tiny{font-size:11px; color:var(--muted)}
+    .list{display:flex; flex-direction:column; gap:8px}
+    .item{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px; border-radius:12px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .item b{font-size:13px}
+    .pill{
+      padding:5px 8px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:11px; color:#cfe0ff;
+      white-space:nowrap;
+    }
+    .danger{border-color: rgba(255,140,140,.35) !important}
+
+    /* Month axis + band */
+    .axis{
+      position:relative;
+      height:26px;
+      margin-bottom:8px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .axis .tick{
+      position:absolute;
+      top:0; bottom:0;
+      width:1px;
+      background: rgba(255,255,255,.10);
+    }
+    .axis .lbl{
+      position:absolute;
+      top:5px;
+      font-size:11px;
+      color:#cfe0ff;
+      padding:2px 6px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      transform: translateX(-10%);
+      white-space:nowrap;
+    }
+
+    .band{
+      display:grid;
+      grid-template-columns: repeat(365, 1fr);
+      gap:1px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 12px;
+      overflow:hidden;
+    }
+    .dayCell{height:18px; background:#222; position:relative}
+    .dayCell.sel{outline:2px solid rgba(255,255,255,.75); outline-offset:-2px}
+
+    .panelTop{display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom:10px;}
+    .big{font-size:34px; line-height:1; font-weight:800; letter-spacing:-.8px;}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:12px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .dot{width:10px; height:10px; border-radius:999px; background:var(--g)}
+    .muted{color:var(--muted)}
+    .mono{font-variant-numeric: tabular-nums}
+    .sliderRow{display:flex; gap:12px; align-items:center; margin-top:10px}
+    input[type="range"]{padding:0; height:30px; background:transparent; border:none}
+    .footerBtns{display:flex; gap:10px; flex-wrap:wrap}
+
+    .windows{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    .winCard{
+      padding:10px;
+      border-radius:12px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .winCard .left{display:flex; flex-direction:column; gap:2px}
+    .winCard .right{display:flex; align-items:center; gap:8px; white-space:nowrap}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Energía del Grupo</h1>
+      <div class="sub">V2 — mini web-app local (sin cuentas) · guardado automático en tu navegador</div>
+    </div>
+    <div class="tiny">Cada persona carga sus datos en su dispositivo. Exportá/Importá JSON para compartir.</div>
+  </header>
+
+  <div class="row">
+    <!-- LEFT: Data -->
+    <div class="card">
+      <h2>Grupos</h2>
+      <div class="grid2">
+        <div>
+          <label>Seleccionar grupo</label>
+          <select id="groupSelect"></select>
+        </div>
+        <div style="display:flex; align-items:end;">
+          <button class="secondary" id="newGroupBtn">+ Nuevo grupo</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <h2>Agregar persona al grupo</h2>
+      <div class="grid2">
+        <div>
+          <label>Nombre</label>
+          <input id="pName" placeholder="Ej: Roque" />
+        </div>
+        <div class="grid2" style="grid-template-columns:1fr 1fr; gap:8px">
+          <div>
+            <label>Día</label>
+            <input id="pDay" type="number" min="1" max="31" placeholder="1" />
+          </div>
+          <div>
+            <label>Mes</label>
+            <input id="pMonth" type="number" min="1" max="12" placeholder="2" />
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <button id="addPersonBtn">Agregar</button>
+        <div class="tiny" id="addHint" style="margin-top:6px;"></div>
+      </div>
+
+      <div class="hr"></div>
+
+      <h2>Personas del grupo</h2>
+      <div class="list" id="peopleList"></div>
+
+      <div class="hr"></div>
+
+      <h2>Backup</h2>
+      <div class="footerBtns">
+        <button class="secondary" id="exportBtn">Exportar JSON</button>
+        <button class="secondary" id="importBtn">Importar JSON</button>
+        <button class="secondary danger" id="resetBtn">Reset (este dispositivo)</button>
+      </div>
+      <input id="fileInput" type="file" accept="application/json" style="display:none" />
+      <div class="tiny" style="margin-top:8px;">
+        Tip: mandale el JSON a tus hermanos por WhatsApp y lo importan. Cada uno maneja sus datos.
+      </div>
+    </div>
+
+    <!-- RIGHT: View -->
+    <div class="card">
+      <div class="panelTop">
+        <div>
+          <div class="muted" id="groupTitle">Grupo</div>
+          <div class="big mono" id="avgBig">—</div>
+          <div class="badge" style="margin-top:10px;">
+            <span class="dot" id="dot"></span>
+            <span class="mono" id="dayLabel">Día —</span>
+            <span class="muted" id="dateLabel">—/—</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="tiny">Min / Max del día</div>
+          <div class="mono" id="minMax">—</div>
+          <div class="tiny muted" id="minMaxNames">—</div>
+        </div>
+      </div>
+
+      <div class="grid2" style="grid-template-columns: 1fr 180px; align-items:end;">
+        <div>
+          <h2 style="margin:0 0 8px 0;">Semáforo anual</h2>
+          <div class="axis" id="axis"></div>
+          <div class="band" id="band"></div>
+        </div>
+        <div>
+          <label>Ventana (días)</label>
+          <select id="windowLen">
+            <option value="7">7 días</option>
+            <option value="10">10 días</option>
+            <option value="14">14 días</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sliderRow">
+        <div class="pill mono" id="doyPill">DOY 1</div>
+        <input id="doyRange" type="range" min="1" max="365" value="1" />
+        <button class="secondary" id="todayBtn" style="max-width:140px;">Ir a HOY</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+        <div>
+          <h2 style="margin:0 0 8px 0;">Mejores ventanas</h2>
+          <div class="windows" id="bestWins"></div>
+        </div>
+        <div>
+          <h2 style="margin:0 0 8px 0;">Peores ventanas</h2>
+          <div class="windows" id="worstWins"></div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="tiny">
+        Colores por promedio: 🟠 &lt;55 · 🟡 55–70 · 🟢 70–85 · 🟢🔥 ≥85. (Modelo simbólico de ciclos: no predice futuro, ayuda a elegir timing.)
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  "use strict";
+
+  // ---------- Config ----------
+  const STORAGE_KEY = "energia_grupo_web_v2";
+
+  // Año genérico (no bisiesto)
+  const monthStarts = [0,31,59,90,120,151,181,212,243,273,304,334];
+  const monthNames = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]; 
+  const maxDaysPerMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+
+  // Energy curve (piecewise linear), age = 0..365 since birthday.
+  const curvePts = [
+    [0,50],[60,70],[150,85],[210,100],[270,70],[330,45],[365,30]
+  ];
+
+  // ---------- Helpers ----------
+  function doyFromDM(day, month){
+    return monthStarts[month-1] + day; // 1..365
+  }
+
+  function dateFromDoy(doy){
+    const base = new Date(2001,0,1);
+    const dt = new Date(base.getTime() + (doy-1)*24*3600*1000);
+    const dd = String(dt.getDate()).padStart(2,"0");
+    const mm = String(dt.getMonth()+1).padStart(2,"0");
+    return `${dd}/${mm}`;
+  }
+
+  function dayOfYearToday(){
+    const now = new Date();
+    const start = new Date(now.getFullYear(),0,1);
+    const doy = Math.floor((now - start)/(24*3600*1000)) + 1;
+    return Math.min(365, Math.max(1, doy));
+  }
+
+  function energyFromAge(age){
+    for(let i=0;i<curvePts.length-1;i++){
+      const [x1,y1]=curvePts[i], [x2,y2]=curvePts[i+1];
+      if(age <= x2){
+        const t = (age - x1)/(x2-x1);
+        return y1 + t*(y2-y1);
+      }
+    }
+    return curvePts[curvePts.length-1][1];
+  }
+
+  function ageInCycle(doy, birthdayDoy){
+    return (doy >= birthdayDoy) ? (doy - birthdayDoy) : (doy - birthdayDoy + 365);
+  }
+
+  function getCSS(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  function colorBucket(avg){
+    if(avg === null) return { label:"—", fill:"#222", dot:"#777" };
+    if(avg < 55) return { label:"🟠", fill:getCSS("--o"), dot:getCSS("--o") };
+    if(avg < 70) return { label:"🟡", fill:getCSS("--y"), dot:getCSS("--y") };
+    if(avg < 85) return { label:"🟢", fill:getCSS("--g"), dot:getCSS("--g") };
+    return { label:"🟢🔥", fill:getCSS("--gg"), dot:getCSS("--gg") };
+  }
+
+  function clampInt(n, min, max){
+    const x = Number(n);
+    if(!Number.isFinite(x)) return null;
+    return Math.min(max, Math.max(min, Math.trunc(x)));
+  }
+
+  // ---------- Data model ----------
+  // data = { groups: [{id, name, people:[{id,name,day,month}]}], lastGroupId }
+  function defaultData(){
+    // Genérico: cada usuario crea lo suyo. Dejo 1 grupo vacío para que no parezca "roto".
+    return {
+      groups: [ { id: "G001", name: "Mi grupo", people: [] } ],
+      lastGroupId: "G001"
+    };
+  }
+
+  function loadData(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return defaultData();
+      const d = JSON.parse(raw);
+      if(!d.groups || !Array.isArray(d.groups) || d.groups.length === 0) return defaultData();
+      return d;
+    }catch(e){
+      return defaultData();
+    }
+  }
+
+  function saveData(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+  }
+
+  // ---------- UI State ----------
+  const state = {
+    data: loadData(),
+    selectedGroupId: null,
+    selectedDoy: 1,
+    cache: {
+      avg: new Array(365).fill(null),
+      min: new Array(365).fill(null),
+      max: new Array(365).fill(null),
+      minName: new Array(365).fill(""),
+      maxName: new Array(365).fill(""),
+    }
+  };
+
+  // ---------- Elements ----------
+  const el = {
+    groupSelect: document.getElementById("groupSelect"),
+    newGroupBtn: document.getElementById("newGroupBtn"),
+    pName: document.getElementById("pName"),
+    pDay: document.getElementById("pDay"),
+    pMonth: document.getElementById("pMonth"),
+    addPersonBtn: document.getElementById("addPersonBtn"),
+    addHint: document.getElementById("addHint"),
+    peopleList: document.getElementById("peopleList"),
+
+    axis: document.getElementById("axis"),
+    band: document.getElementById("band"),
+    doyRange: document.getElementById("doyRange"),
+    doyPill: document.getElementById("doyPill"),
+    todayBtn: document.getElementById("todayBtn"),
+
+    groupTitle: document.getElementById("groupTitle"),
+    avgBig: document.getElementById("avgBig"),
+    dot: document.getElementById("dot"),
+    dayLabel: document.getElementById("dayLabel"),
+    dateLabel: document.getElementById("dateLabel"),
+    minMax: document.getElementById("minMax"),
+    minMaxNames: document.getElementById("minMaxNames"),
+
+    windowLen: document.getElementById("windowLen"),
+    bestWins: document.getElementById("bestWins"),
+    worstWins: document.getElementById("worstWins"),
+
+    exportBtn: document.getElementById("exportBtn"),
+    importBtn: document.getElementById("importBtn"),
+    resetBtn: document.getElementById("resetBtn"),
+    fileInput: document.getElementById("fileInput"),
+  };
+
+  // ---------- Core selectors ----------
+  function currentGroup(){
+    return state.data.groups.find(g => g.id === state.selectedGroupId) || state.data.groups[0];
+  }
+
+  function ensureSelectedGroup(){
+    if(!state.selectedGroupId){
+      state.selectedGroupId = state.data.lastGroupId || (state.data.groups[0]?.id ?? "G001");
+    }
+    if(!state.data.groups.find(g=>g.id===state.selectedGroupId) && state.data.groups.length){
+      state.selectedGroupId = state.data.groups[0].id;
+    }
+  }
+
+  // ---------- Computation ----------
+  function computeBand(){
+    const g = currentGroup();
+    const people = Array.isArray(g.people) ? g.people : [];
+    const n = people.length;
+
+    const avgArr = new Array(365).fill(null);
+    const minArr = new Array(365).fill(null);
+    const maxArr = new Array(365).fill(null);
+    const minName = new Array(365).fill("");
+    const maxName = new Array(365).fill("");
+
+    if(n === 0){
+      state.cache = { avg: avgArr, min: minArr, max: maxArr, minName, maxName };
+      return;
+    }
+
+    const bdays = people.map(p => ({
+      name: p.name,
+      doy: doyFromDM(p.day, p.month)
+    }));
+
+    for(let doy=1; doy<=365; doy++){
+      let sum=0;
+      let mn=1e9, mx=-1e9;
+      let mnN="", mxN="";
+
+      for(const b of bdays){
+        const age = ageInCycle(doy, b.doy);
+        const e = energyFromAge(age);
+        sum += e;
+        if(e < mn){ mn = e; mnN = b.name; }
+        if(e > mx){ mx = e; mxN = b.name; }
+      }
+
+      const avg = sum / n;
+      avgArr[doy-1] = avg;
+      minArr[doy-1] = mn;
+      maxArr[doy-1] = mx;
+      minName[doy-1] = mnN;
+      maxName[doy-1] = mxN;
+    }
+
+    state.cache = { avg: avgArr, min: minArr, max: maxArr, minName, maxName };
+  }
+
+  // Rolling windows: top/bottom K non-overlapping windows.
+  function computeWindows(windowLen, k=3){
+    const avgArr = state.cache.avg;
+    const n = avgArr.filter(v => v !== null).length;
+    if(n === 0) return { best: [], worst: [] };
+
+    const L = windowLen;
+    const scores = [];
+
+    // Precompute prefix sum for speed
+    const prefix = [0];
+    for(let i=0;i<365;i++){
+      prefix.push(prefix[prefix.length-1] + (avgArr[i] ?? 0));
+    }
+
+    // Circular windows on generic year (wrap-around)
+    for(let start=1; start<=365; start++){
+      let sum=0;
+      if(start + L - 1 <= 365){
+        sum = prefix[start+L-1] - prefix[start-1];
+      }else{
+        const firstPart = prefix[365] - prefix[start-1];
+        const rest = (start + L - 1) - 365;
+        const secondPart = prefix[rest] - prefix[0];
+        sum = firstPart + secondPart;
+      }
+      scores.push({ start, end: ((start+L-2)%365)+1, avg: sum / L });
+    }
+
+    // Non-overlap selection: pick best, then block a zone of L days around start..end.
+    function selectNonOverlapping(sorted){
+      const picked = [];
+      const blocked = new Array(366).fill(false); // 1..365
+
+      function markBlocked(start){
+        for(let i=0;i<L;i++){
+          const d = ((start+i-1)%365)+1;
+          blocked[d] = true;
+        }
+      }
+
+      for(const s of sorted){
+        // If any day in window is blocked, skip
+        let ok = true;
+        for(let i=0;i<L;i++){
+          const d = ((s.start+i-1)%365)+1;
+          if(blocked[d]){ ok = false; break; }
+        }
+        if(!ok) continue;
+
+        picked.push(s);
+        markBlocked(s.start);
+        if(picked.length >= k) break;
+      }
+      return picked;
+    }
+
+    const bestSorted = [...scores].sort((a,b)=> b.avg - a.avg);
+    const worstSorted = [...scores].sort((a,b)=> a.avg - b.avg);
+
+    const best = selectNonOverlapping(bestSorted);
+    const worst = selectNonOverlapping(worstSorted);
+
+    return { best, worst };
+  }
+
+  // ---------- Rendering ----------
+  function renderAxis(){
+    el.axis.innerHTML = "";
+    // ticks at month starts
+    for(let m=1; m<=12; m++){
+      const start = monthStarts[m-1] + 1; // DOY
+      const pct = ((start-1)/365)*100;
+
+      const tick = document.createElement("div");
+      tick.className = "tick";
+      tick.style.left = `${pct}%`;
+      el.axis.appendChild(tick);
+
+      const lbl = document.createElement("div");
+      lbl.className = "lbl";
+      lbl.style.left = `${pct}%`;
+      lbl.textContent = monthNames[m-1];
+      el.axis.appendChild(lbl);
+    }
+  }
+
+  function renderGroupSelect(){
+    el.groupSelect.innerHTML = "";
+    for(const g of state.data.groups){
+      const opt = document.createElement("option");
+      opt.value = g.id;
+      opt.textContent = `${g.id} — ${g.name}`;
+      el.groupSelect.appendChild(opt);
+    }
+    el.groupSelect.value = state.selectedGroupId;
+  }
+
+  function renderPeopleList(){
+    const g = currentGroup();
+    el.peopleList.innerHTML = "";
+
+    if(!g.people || g.people.length === 0){
+      const d = document.createElement("div");
+      d.className = "tiny muted";
+      d.textContent = "Este grupo no tiene personas todavía.";
+      el.peopleList.appendChild(d);
+      return;
+    }
+
+    for(const p of g.people){
+      const item = document.createElement("div");
+      item.className = "item";
+
+      const left = document.createElement("div");
+      left.innerHTML = `<b>${escapeHtml(p.name)}</b><div class="tiny muted">${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")}</div>`;
+
+      const right = document.createElement("div");
+      right.style.display = "flex";
+      right.style.gap = "8px";
+
+      const pill = document.createElement("div");
+      pill.className = "pill mono";
+      pill.textContent = `DOY ${doyFromDM(p.day,p.month)}`;
+
+      const del = document.createElement("button");
+      del.className = "secondary";
+      del.style.width = "92px";
+      del.textContent = "Quitar";
+      del.onclick = () => {
+        g.people = g.people.filter(x => x.id !== p.id);
+        saveData();
+        recomputeAndRender();
+      };
+
+      right.appendChild(pill);
+      right.appendChild(del);
+      item.appendChild(left);
+      item.appendChild(right);
+      el.peopleList.appendChild(item);
+    }
+  }
+
+  function renderBand(){
+    el.band.innerHTML = "";
+    for(let i=1;i<=365;i++){
+      const div = document.createElement("div");
+      div.className = "dayCell";
+      const avg = state.cache.avg[i-1];
+      const cb = colorBucket(avg);
+      div.style.background = cb.fill || "#222";
+      div.title = `DOY ${i} (${dateFromDoy(i)}) — avg ${avg?.toFixed(1) ?? "—"} ${cb.label}`;
+      if(i === state.selectedDoy) div.classList.add("sel");
+      div.onclick = () => {
+        state.selectedDoy = i;
+        el.doyRange.value = String(i);
+        renderRightPanel();
+        renderBand();
+      };
+      el.band.appendChild(div);
+    }
+  }
+
+  function renderRightPanel(){
+    const g = currentGroup();
+    el.groupTitle.textContent = `${g.name} (${g.id})`;
+
+    const doy = state.selectedDoy;
+    el.doyPill.textContent = `DOY ${doy}`;
+    el.dayLabel.textContent = `Día ${doy}`;
+    el.dateLabel.textContent = dateFromDoy(doy);
+
+    const avg = state.cache.avg[doy-1];
+    const mn = state.cache.min[doy-1];
+    const mx = state.cache.max[doy-1];
+    const mnN = state.cache.minName[doy-1];
+    const mxN = state.cache.maxName[doy-1];
+
+    if(avg === null){
+      el.avgBig.textContent = "—";
+      el.dot.style.background = "#777";
+      el.minMax.textContent = "—";
+      el.minMaxNames.textContent = "—";
+      return;
+    }
+
+    const cb = colorBucket(avg);
+    el.avgBig.textContent = `${avg.toFixed(0)}% ${cb.label}`;
+    el.dot.style.background = cb.dot;
+
+    el.minMax.textContent = `${mn.toFixed(0)}% / ${mx.toFixed(0)}%`;
+    el.minMaxNames.textContent = `${mnN} / ${mxN}`;
+  }
+
+  function renderWindows(){
+    const L = parseInt(el.windowLen.value, 10);
+    const { best, worst } = computeWindows(L, 3);
+
+    function renderList(container, items, kind){
+      container.innerHTML = "";
+      if(items.length === 0){
+        const d = document.createElement("div");
+        d.className = "tiny muted";
+        d.textContent = "Agregá personas para ver ventanas.";
+        container.appendChild(d);
+        return;
+      }
+      for(const w of items){
+        const card = document.createElement("div");
+        card.className = "winCard";
+
+        const left = document.createElement("div");
+        left.className = "left";
+        const startDate = dateFromDoy(w.start);
+        const endDate = dateFromDoy(w.end);
+        const label = `${startDate} → ${endDate}`;
+        left.innerHTML = `<div class="mono"><b>${label}</b></div><div class="tiny muted">Ventana ${L} días</div>`;
+
+        const right = document.createElement("div");
+        right.className = "right";
+        const cb = colorBucket(w.avg);
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = cb.dot;
+        const txt = document.createElement("span");
+        txt.className = "mono";
+        txt.textContent = `${w.avg.toFixed(0)}% ${cb.label}`;
+        right.appendChild(dot);
+        right.appendChild(txt);
+
+        card.appendChild(left);
+        card.appendChild(right);
+
+        // Click to jump to start day
+        card.style.cursor = "pointer";
+        card.title = "Click para ir al inicio";
+        card.onclick = () => {
+          state.selectedDoy = w.start;
+          el.doyRange.value = String(state.selectedDoy);
+          renderRightPanel();
+          renderBand();
+        };
+
+        container.appendChild(card);
+      }
+    }
+
+    renderList(el.bestWins, best, "best");
+    renderList(el.worstWins, worst, "worst");
+  }
+
+  function recomputeAndRender(){
+    renderGroupSelect();
+    renderPeopleList();
+    computeBand();
+    renderAxis();
+    renderBand();
+    renderRightPanel();
+    renderWindows();
+  }
+
+  // ---------- Safety: basic HTML escape ----------
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // ---------- Actions ----------
+  el.groupSelect.addEventListener("change", () => {
+    state.selectedGroupId = el.groupSelect.value;
+    state.data.lastGroupId = state.selectedGroupId;
+    saveData();
+    recomputeAndRender();
+  });
+
+  el.newGroupBtn.addEventListener("click", () => {
+    const name = prompt("Nombre del nuevo grupo:", "Mi grupo");
+    if(!name) return;
+
+    const nums = state.data.groups
+      .map(g => parseInt(g.id.replace("G",""),10))
+      .filter(n=>Number.isFinite(n));
+    const next = (nums.length ? Math.max(...nums)+1 : 1);
+    const id = `G${String(next).padStart(3,"0")}`;
+
+    state.data.groups.push({ id, name: name.trim(), people: [] });
+    state.selectedGroupId = id;
+    state.data.lastGroupId = id;
+    saveData();
+    recomputeAndRender();
+  });
+
+  el.addPersonBtn.addEventListener("click", () => {
+    const name = el.pName.value.trim();
+    const day = clampInt(el.pDay.value, 1, 31);
+    const month = clampInt(el.pMonth.value, 1, 12);
+
+    el.addHint.textContent = "";
+
+    if(!name || day === null || month === null){
+      el.addHint.textContent = "Completá nombre, día y mes.";
+      return;
+    }
+
+    const maxDays = maxDaysPerMonth[month-1];
+    if(day > maxDays){
+      el.addHint.textContent = `Ese mes tiene máximo ${maxDays} días (año genérico).`;
+      return;
+    }
+
+    const g = currentGroup();
+    g.people = Array.isArray(g.people) ? g.people : [];
+
+    // Avoid duplicates by name+date (simple)
+    const exists = g.people.some(p =>
+      p.name.toLowerCase() === name.toLowerCase() && p.day === day && p.month === month
+    );
+    if(exists){
+      el.addHint.textContent = "Esa persona ya existe en el grupo.";
+      return;
+    }
+
+    const nums = g.people
+      .map(p => parseInt(p.id.replace("P",""),10))
+      .filter(n=>Number.isFinite(n));
+    const next = (nums.length ? Math.max(...nums)+1 : 1);
+    const pid = `P${String(next).padStart(3,"0")}`;
+
+    g.people.push({ id: pid, name, day, month });
+
+    el.pName.value = "";
+    el.pDay.value = "";
+    el.pMonth.value = "";
+
+    saveData();
+    recomputeAndRender();
+  });
+
+  el.doyRange.addEventListener("input", () => {
+    state.selectedDoy = parseInt(el.doyRange.value,10);
+    renderRightPanel();
+    renderBand();
+  });
+
+  el.todayBtn.addEventListener("click", () => {
+    state.selectedDoy = dayOfYearToday();
+    el.doyRange.value = String(state.selectedDoy);
+    renderRightPanel();
+    renderBand();
+  });
+
+  el.windowLen.addEventListener("change", () => {
+    renderWindows();
+  });
+
+  el.exportBtn.addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(state.data, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "energia_grupo_backup.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  el.importBtn.addEventListener("click", () => {
+    el.fileInput.value = "";
+    el.fileInput.click();
+  });
+
+  el.fileInput.addEventListener("change", async () => {
+    const file = el.fileInput.files?.[0];
+    if(!file) return;
+    try{
+      const text = await file.text();
+      const d = JSON.parse(text);
+      if(!d.groups || !Array.isArray(d.groups) || d.groups.length === 0) throw new Error("JSON inválido: falta groups");
+      // Basic normalization
+      for(const g of d.groups){
+        g.people = Array.isArray(g.people) ? g.people : [];
+      }
+      state.data = d;
+      state.selectedGroupId = d.lastGroupId || d.groups[0]?.id || "G001";
+      saveData();
+      recomputeAndRender();
+      alert("Importado OK ✅");
+    }catch(e){
+      alert("No pude importar: " + e.message);
+    }
+  });
+
+  el.resetBtn.addEventListener("click", () => {
+    if(!confirm("¿Seguro? Esto borra los datos guardados en ESTE dispositivo.")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state.data = defaultData();
+    state.selectedGroupId = state.data.lastGroupId;
+    state.selectedDoy = dayOfYearToday();
+    saveData();
+    recomputeAndRender();
+  });
+
+  // ---------- Init ----------
+  ensureSelectedGroup();
+  state.selectedDoy = dayOfYearToday();
+  el.doyRange.value = String(state.selectedDoy);
+  recomputeAndRender();
+
+</script>
+</body>
+</html>
