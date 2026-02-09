@@ -185,7 +185,9 @@
     
     .minmaxBox{
       text-align:center;
-      min-width:160px;
+      width:240px;            /* ancho fijo para evitar que el cuadro se mueva */
+      min-width:240px;
+      max-width:240px;
     }
 
     .chips{
@@ -214,14 +216,21 @@
       margin:10px 0;
       border-radius:999px;
     }
-    .bar{
+    
+    #harmonyHint{display:block; min-height:14px;} /* reserva espacio para texto */
+.bar{
       height:8px;
+      width:180px;
+      max-width:100%;
       background: rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.10);
       border-radius:999px;
       overflow:hidden;
-      margin-top:8px;
+      margin:8px auto 0 auto; /* siempre mismo largo y centrada */
     }
+
+    .bar span{display:block;height:100%;width:0%;}
+
     .bar > span{
       display:block;
       height:100%;
