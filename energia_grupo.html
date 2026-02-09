@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Energía del Grupo</title>
+  <title>Ritmo del Año</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#0b1220;
@@ -20,14 +23,14 @@
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin:0; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: radial-gradient(1200px 800px at 20% 10%, #162447 0%, var(--bg) 55%);
       color:var(--text);
     }
     .wrap{max-width:1100px; margin:0 auto; padding:20px}
     header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;}
-    h1{font-size:18px; margin:0; letter-spacing:.2px}
-    .sub{font-size:12px; color:var(--muted)}
+    h1{font-size:20px; margin:0; letter-spacing:.2px; font-weight:800}
+    .sub{font-size:12px; color:var(--muted); line-height:1.35}
     .row{display:grid; grid-template-columns: 360px 1fr; gap:14px}
     @media (max-width: 980px){ .row{grid-template-columns:1fr} }
 
@@ -38,7 +41,7 @@
       border-radius:16px;
       padding:14px;
     }
-    .card h2{font-size:13px; margin:0 0 10px 0; color:#dbe6ff}
+    .card h2{font-size:13px; margin:0 0 10px 0; color:#dbe6ff; letter-spacing:.2px}
     label{font-size:12px; color:var(--muted); display:block; margin-bottom:6px}
     input, select, button, textarea{
       width:100%;
@@ -73,7 +76,9 @@
     }
     .item b{font-size:13px}
     .pill{
-      padding:5px 8px;
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:5px 10px;
+      min-width:72px;
       border-radius:999px;
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
@@ -84,7 +89,9 @@
 
     /* Month axis + band */
     .axis{
-      position:relative;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      align-items:center;
       height:26px;
       margin-bottom:8px;
       border-radius:12px;
@@ -92,24 +99,23 @@
       background: rgba(255,255,255,.03);
       overflow:hidden;
     }
-    .axis .tick{
-      position:absolute;
-      top:0; bottom:0;
-      width:1px;
-      background: rgba(255,255,255,.10);
+    .axis .mcell{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
     }
-    .axis .lbl{
-      position:absolute;
-      top:5px;
+    .axis .mcell span{
       font-size:11px;
       color:#cfe0ff;
       padding:2px 6px;
       border-radius:999px;
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
-      transform: translateX(-10%);
+      line-height:1;
       white-space:nowrap;
     }
+
 
     .band{
       display:grid;
@@ -155,16 +161,52 @@
     }
     .winCard .left{display:flex; flex-direction:column; gap:2px}
     .winCard .right{display:flex; align-items:center; gap:8px; white-space:nowrap}
+
+    .helpBox{
+      padding:12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .helpBox h3{
+      margin:0 0 8px 0;
+      font-size:12px;
+      color:#dbe6ff;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+    }
+    .helpBox ol{
+      margin:0;
+      padding-left:18px;
+      display:grid;
+      gap:6px;
+    }
+    .helpBox li{color: var(--text); font-size:12px; line-height:1.35}
+    
+    .minmaxBox{
+      text-align:center;
+      min-width:160px;
+    }
+    .minmaxBox #minMax{font-size:16px; font-weight:700; margin-top:2px}
+    .minmaxBox #minMaxNames{margin-top:4px}
+
+    .helpBox .legend{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size:11px;
+      line-height:1.35;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
-      <h1>Energía del Grupo</h1>
+      <h1>Ritmo del Año</h1>
       <div class="sub">V2 — mini web-app local (sin cuentas) · guardado automático en tu navegador</div>
     </div>
-    <div class="tiny">Cada persona carga sus datos en su dispositivo. Exportá/Importá JSON para compartir.</div>
   </header>
 
   <div class="row">
@@ -219,10 +261,7 @@
         <button class="secondary danger" id="resetBtn">Reset (este dispositivo)</button>
       </div>
       <input id="fileInput" type="file" accept="application/json" style="display:none" />
-      <div class="tiny" style="margin-top:8px;">
-        Tip: mandale el JSON a tus hermanos por WhatsApp y lo importan. Cada uno maneja sus datos.
-      </div>
-    </div>
+</div>
 
     <!-- RIGHT: View -->
     <div class="card">
@@ -236,7 +275,7 @@
             <span class="muted" id="dateLabel">—/—</span>
           </div>
         </div>
-        <div style="text-align:right">
+        <div class="minmaxBox">
           <div class="tiny">Min / Max del día</div>
           <div class="mono" id="minMax">—</div>
           <div class="tiny muted" id="minMaxNames">—</div>
@@ -260,7 +299,7 @@
       </div>
 
       <div class="sliderRow">
-        <div class="pill mono" id="doyPill">DOY 1</div>
+        <div class="pill mono" id="doyPill">Día 1</div>
         <input id="doyRange" type="range" min="1" max="365" value="1" />
         <button class="secondary" id="todayBtn" style="max-width:140px;">Ir a HOY</button>
       </div>
@@ -279,8 +318,21 @@
       </div>
 
       <div class="hr"></div>
-      <div class="tiny">
-        Colores por promedio: 🟠 &lt;55 · 🟡 55–70 · 🟢 70–85 · 🟢🔥 ≥85. (Modelo simbólico de ciclos: no predice futuro, ayuda a elegir timing.)
+      <div class="helpBox" id="helpBox">
+        <h3>Cómo usar</h3>
+        <ol>
+          <li><b>Creá un grupo</b> (familia, amigos, equipo) y ponéle un nombre.</li>
+          <li><b>Agregá personas</b> con su fecha de nacimiento (día y mes).</li>
+          <li><b>Explorá el año</b> usando el semáforo o el control de día.</li>
+          <li><b>Mirá el promedio</b> y el <b>Min/Max del día</b> para entender el ritmo del grupo.</li>
+          <li><b>Usá las ventanas</b> (mejores/peores) como referencia para elegir timing.</li>
+        </ol>
+        <div class="legend">
+          <div><b>Leyenda de colores (promedio)</b>: 🟠 &lt;55 · 🟡 55–70 · 🟢 70–85 · 🟢🔥 ≥85</div>
+          <div style="margin-top:6px;">Modelo simbólico de ciclos: no predice futuro; ayuda a elegir momentos.</div>
+          <div style="margin-top:6px;">Privacidad: los datos se guardan <b>solo en tu dispositivo</b>. Podés <b>exportar/importar JSON</b> para compartir con familiares o amigos.</div>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -559,21 +611,13 @@
   // ---------- Rendering ----------
   function renderAxis(){
     el.axis.innerHTML = "";
-    // ticks at month starts
     for(let m=1; m<=12; m++){
-      const start = monthStarts[m-1] + 1; // DOY
-      const pct = ((start-1)/365)*100;
-
-      const tick = document.createElement("div");
-      tick.className = "tick";
-      tick.style.left = `${pct}%`;
-      el.axis.appendChild(tick);
-
-      const lbl = document.createElement("div");
-      lbl.className = "lbl";
-      lbl.style.left = `${pct}%`;
-      lbl.textContent = monthNames[m-1];
-      el.axis.appendChild(lbl);
+      const cell = document.createElement("div");
+      cell.className = "mcell";
+      const span = document.createElement("span");
+      span.textContent = monthNames[m-1];
+      cell.appendChild(span);
+      el.axis.appendChild(cell);
     }
   }
 
@@ -582,7 +626,7 @@
     for(const g of state.data.groups){
       const opt = document.createElement("option");
       opt.value = g.id;
-      opt.textContent = `${g.id} — ${g.name}`;
+      opt.textContent = `${g.name}`;
       el.groupSelect.appendChild(opt);
     }
     el.groupSelect.value = state.selectedGroupId;
@@ -613,7 +657,7 @@
 
       const pill = document.createElement("div");
       pill.className = "pill mono";
-      pill.textContent = `DOY ${doyFromDM(p.day,p.month)}`;
+      pill.textContent = `Día ${doyFromDM(p.day,p.month)}`;
 
       const del = document.createElement("button");
       del.className = "secondary";
@@ -641,7 +685,7 @@
       const avg = state.cache.avg[i-1];
       const cb = colorBucket(avg);
       div.style.background = cb.fill || "#222";
-      div.title = `DOY ${i} (${dateFromDoy(i)}) — avg ${avg?.toFixed(1) ?? "—"} ${cb.label}`;
+      div.title = `Día ${i} (${dateFromDoy(i)}) — promedio ${avg?.toFixed(1) ?? "—"} ${cb.label}`;
       if(i === state.selectedDoy) div.classList.add("sel");
       div.onclick = () => {
         state.selectedDoy = i;
@@ -655,10 +699,10 @@
 
   function renderRightPanel(){
     const g = currentGroup();
-    el.groupTitle.textContent = `${g.name} (${g.id})`;
+    el.groupTitle.textContent = `${g.name}`;
 
     const doy = state.selectedDoy;
-    el.doyPill.textContent = `DOY ${doy}`;
+    el.doyPill.textContent = `Día ${doy}`;
     el.dayLabel.textContent = `Día ${doy}`;
     el.dateLabel.textContent = dateFromDoy(doy);
 
