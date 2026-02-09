@@ -32,7 +32,7 @@
     h1{font-size:20px; margin:0; letter-spacing:.2px; font-weight:800}
     .sub{font-size:12px; color:var(--muted); line-height:1.35}
     .row{display:grid; grid-template-columns: 360px 1fr; gap:14px}
-    @media (max-width: 980px){ .row{grid-template-columns:1fr} }
+    @media (max-width: 980px){ .row{grid-template-columns:1fr} .groupBtns{grid-template-columns:1fr} }
 
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
@@ -65,7 +65,10 @@
       font-weight:600;
     }
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    .hr{height:1px; background: rgba(255,255,255,.08); margin:12px 0}
+    .groupRow{display:flex; flex-direction:column; gap:8px}
+    .groupBtns{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+    .groupBtns button{width:100%; white-space:nowrap}
+.hr{height:1px; background: rgba(255,255,255,.08); margin:12px 0}
     .tiny{font-size:11px; color:var(--muted)}
     .list{display:flex; flex-direction:column; gap:8px}
     .item{
@@ -75,10 +78,21 @@
       border:1px solid rgba(255,255,255,.08);
     }
     .item b{font-size:13px}
+
+    /* Personas: nombre flexible + acciones alineadas a la derecha (evita corrimientos) */
+    .personLeft{ flex:1; min-width:0; }
+    .personName{ display:block; white-space:normal; overflow:visible; text-overflow:unset; max-width:100%; }
+    .personActions{ display:flex; align-items:center; justify-content:flex-end; gap:8px; flex:0 0 auto; }
+    .personActions button{ width:82px; padding:8px 10px; font-size:12px; }
+    @media (max-width: 560px){
+      .personActions{ flex-wrap:wrap; justify-content:flex-end; }
+      .personActions button{ width:auto; min-width:78px; padding:8px 10px; font-size:12px; }
+    }
+
     .pill{
       display:inline-flex; align-items:center; justify-content:center;
-      padding:5px 10px;
-      min-width:72px;
+      padding:4px 9px;
+      min-width:64px;
       border-radius:999px;
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
@@ -118,6 +132,7 @@
 
 
     .band{
+      position:relative;
       display:grid;
       grid-template-columns: repeat(365, 1fr);
       gap:1px;
@@ -138,6 +153,37 @@
       border:1px solid rgba(255,255,255,.10);
     }
     .dot{width:10px; height:10px; border-radius:999px; background:var(--g)}
+
+    .dotBig{width:22px; height:22px; border-radius:999px; background:var(--g); box-shadow:0 0 18px rgba(160,255,220,.25);}
+    /* Marcadores de cumpleaños en el semáforo (sutiles, dentro de la barra) */
+    .bdayMark{
+      position:absolute;
+      top:2px;
+      width:6px;
+      height:6px;
+      border-radius:999px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.35);
+      box-shadow: 0 6px 16px rgba(0,0,0,.35);
+      transform: translateX(-50%);
+      cursor: help;
+      z-index: 5;
+    }
+    .winCard.selected{
+      border-color: rgba(106,168,255,.42);
+      box-shadow: 0 0 0 2px rgba(106,168,255,.16) inset;
+      background: rgba(106,168,255,.06);
+    }
+    .winSummary{
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .winSummary .rowLine{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .winSummary .title{ font-weight:800; letter-spacing:.2px; }
+
     .muted{color:var(--muted)}
     .mono{font-variant-numeric: tabular-nums}
     .sliderRow{display:flex; gap:12px; align-items:center; margin-top:10px}
@@ -170,7 +216,7 @@
     }
     .helpBox h3{
       margin:0 0 8px 0;
-      font-size:12px;
+      font-size: 11.5px;
       color:#dbe6ff;
       letter-spacing:.2px;
       text-transform: uppercase;
@@ -250,6 +296,50 @@
       font-size:11px;
       line-height:1.35;
     }
+  
+    /* Modal */
+    .modalOverlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.55);
+      display:flex; align-items:center; justify-content:center;
+      padding:16px;
+      z-index:9999;
+    }
+    .modalOverlay.hidden{ display:none; }
+    .modalCard{
+      width:min(520px, 96vw);
+      background:linear-gradient(180deg, #121c32, #0f172a);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      box-shadow:0 14px 40px rgba(0,0,0,.45);
+      padding:16px;
+    }
+    .modalHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .modalTitle{ font-weight:800; letter-spacing:.2px; }
+    .modalClose{
+      width:38px; height:38px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      cursor:pointer;
+    }
+    .modalActions{
+      display:flex; gap:10px; justify-content:flex-end;
+      margin-top:12px;
+    }
+    .modalHint{ margin-top:6px; }
+    .modalError{
+      color:#ffb3b3;
+      margin-top:8px;
+      font-size:12px;
+      display:none;
+    }
+
   </style>
 </head>
 <body>
@@ -265,13 +355,15 @@
     <!-- LEFT: Data -->
     <div class="card">
       <h2>Grupos</h2>
-      <div class="grid2">
+      <div class="groupRow">
         <div>
           <label>Seleccionar grupo</label>
           <select id="groupSelect"></select>
         </div>
-        <div style="display:flex; align-items:end;">
-          <button class="secondary" id="newGroupBtn">+ Nuevo grupo</button>
+        <div class="groupBtns">
+          <button class="secondary" id="newGroupBtn">Nuevo grupo</button>
+          <button class="secondary" id="renameGroupBtn">Renombrar</button>
+          <button class="danger" id="deleteGroupBtn">Eliminar</button>
         </div>
       </div>
 
@@ -301,14 +393,25 @@
 
       <div class="hr"></div>
 
-      <h2>Personas del grupo</h2>
-      <div class="list" id="peopleList"></div>
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px;">
+        <h2 style="margin:0;">Personas del grupo</h2>
+        <div style="width: 150px;">
+          <label for="sortPeople" style="margin:0 0 6px;">Orden</label>
+          <select id="sortPeople">
+            <option value="added">Ingreso</option>
+            <option value="name">Nombre</option>
+            <option value="bday">Cumple</option>
+          </select>
+        </div>
+      </div>
+      <div class="list" id="peopleList" style="margin-top:10px;"></div>
 
       <div class="hr"></div>
 
       <h2>Backup</h2>
       <div class="footerBtns">
         <button class="secondary" id="exportBtn">Exportar JSON</button>
+        <button class="secondary" id="exportGroupBtn">Exportar grupo</button>
         <button class="secondary" id="importBtn">Importar JSON</button>
         <button class="secondary danger" id="resetBtn">Reset (este dispositivo)</button>
       </div>
@@ -322,7 +425,7 @@
           <div class="muted" id="groupTitle">Grupo</div>
           <div class="big mono" id="avgBig">—</div>
           <div class="badge" style="margin-top:10px;">
-            <span class="dot" id="dot"></span>
+            <span class="dotBig" id="dot"></span>
             <span class="mono" id="dayLabel">Día —</span>
             <span class="muted" id="dateLabel">—/—</span>
           </div>
@@ -340,6 +443,7 @@
           <div class="divider"></div>
 
           <div class="tiny">Armonía del día</div>
+          <div class="tiny muted" style="margin-top:-2px;">Qué tan alineado está el grupo hoy.</div>
           <div class="mono" id="harmonyVal">—</div>
           <div class="bar" aria-hidden="true"><span id="harmonyBar"></span></div>
           <div class="tiny muted" id="harmonyHint">—</div>
@@ -372,14 +476,15 @@
 
       <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
         <div>
-          <h2 style="margin:0 0 8px 0;">Mejores ventanas</h2>
+          <h2 style="margin:0 0 4px 0;">Mejores ventanas</h2><div class="tiny muted" style="margin-bottom:8px;">Períodos con mayor energía promedio.</div>
           <div class="windows" id="bestWins"></div>
         </div>
         <div>
-          <h2 style="margin:0 0 8px 0;">Peores ventanas</h2>
+          <h2 style="margin:0 0 4px 0;">Peores ventanas</h2><div class="tiny muted" style="margin-bottom:8px;">Períodos con menor energía promedio.</div>
           <div class="windows" id="worstWins"></div>
         </div>
       </div>
+      <div id="windowSummary" class="winSummary" style="display:none;"></div>
 
       <div class="hr"></div>
       <div class="helpBox" id="helpBox">
@@ -401,6 +506,49 @@
     </div>
   </div>
 </div>
+
+<!-- Modal (Editar persona / Renombrar grupo) -->
+  <div id="modalOverlay" class="modalOverlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modalCard">
+      <div class="modalHeader">
+        <div class="modalTitle" id="modalTitle">Editar</div>
+        <button class="modalClose" id="modalCloseBtn" title="Cerrar">✕</button>
+      </div>
+
+      <div id="modalPersonFields">
+        <div class="grid2">
+          <div>
+            <label>Nombre</label>
+            <input id="mPersonName" placeholder="Ej: Roque" />
+          </div>
+          <div class="grid2" style="grid-template-columns:1fr 1fr; gap:8px">
+            <div>
+              <label>Día</label>
+              <input id="mPersonDay" type="number" inputmode="numeric" min="1" max="31" />
+            </div>
+            <div>
+              <label>Mes</label>
+              <input id="mPersonMonth" type="number" inputmode="numeric" min="1" max="12" />
+            </div>
+          </div>
+        </div>
+        <div class="tiny muted modalHint">Tip: si cambiás día/mes, el “Día X” se actualiza automáticamente.</div>
+      </div>
+
+      <div id="modalGroupFields" style="display:none;">
+        <label>Nombre del grupo</label>
+        <input id="mGroupName" placeholder="Ej: Familia" />
+      </div>
+
+      <div id="modalError" class="modalError"></div>
+
+      <div class="modalActions">
+        <button class="secondary" id="modalCancelBtn">Cancelar</button>
+        <button class="primary" id="modalSaveBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+
 
 <script>
   "use strict";
@@ -458,11 +606,12 @@
   }
 
   function colorBucket(avg){
-    if(avg === null) return { label:"—", fill:"#222", dot:"#777" };
-    if(avg < 55) return { label:"🟠", fill:getCSS("--o"), dot:getCSS("--o") };
-    if(avg < 70) return { label:"🟡", fill:getCSS("--y"), dot:getCSS("--y") };
-    if(avg < 85) return { label:"🟢", fill:getCSS("--g"), dot:getCSS("--g") };
-    return { label:"🟢🔥", fill:getCSS("--gg"), dot:getCSS("--gg") };
+    // Paleta única (misma intensidad para punto grande y semáforo)
+    if(avg==null) return { c:"#222", label:"" };
+    if(avg < 55) return { c:"#ff5c4d", label:"" };     // rojo vivo
+    if(avg < 70) return { c:"#ffc84a", label:"" };     // amarillo vivo
+    if(avg < 85) return { c:"#63e08a", label:"" };     // verde claro vivo
+    return { c:"#18d878", label:"" };                  // verde intenso
   }
 
 
@@ -501,7 +650,28 @@
     }
   }
 
-  function saveData(){
+  
+
+  function loadExampleIntoCurrentGroup(){
+    const g = currentGroup();
+    if(!g) return;
+
+    // Solo carga ejemplo si está vacío (para evitar pisar datos)
+    if(Array.isArray(g.people) && g.people.length > 0){
+      alert("Este grupo ya tiene personas. Si querés ver el ejemplo, creá un grupo nuevo vacío y cargalo ahí.");
+      return;
+    }
+
+    g.people = [
+      { id: "P_EX_1", name: "Luna", day: 6, month: 4 },
+      { id: "P_EX_2", name: "Mateo", day: 19, month: 7 },
+      { id: "P_EX_3", name: "Mora", day: 11, month: 12 },
+    ];
+
+    saveData();
+    recomputeAndRender();
+  }
+function saveData(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
   }
 
@@ -510,6 +680,8 @@
     data: loadData(),
     selectedGroupId: null,
     selectedDoy: 1,
+    selectedWindowStart: null,
+    selectedWindowLen: null,
     cache: {
       avg: new Array(365).fill(null),
       min: new Array(365).fill(null),
@@ -523,12 +695,27 @@
   const el = {
     groupSelect: document.getElementById("groupSelect"),
     newGroupBtn: document.getElementById("newGroupBtn"),
+    renameGroupBtn: document.getElementById("renameGroupBtn"),
+    deleteGroupBtn: document.getElementById("deleteGroupBtn"),
+    modalOverlay: document.getElementById("modalOverlay"),
+    modalTitle: document.getElementById("modalTitle"),
+    modalCloseBtn: document.getElementById("modalCloseBtn"),
+    modalCancelBtn: document.getElementById("modalCancelBtn"),
+    modalSaveBtn: document.getElementById("modalSaveBtn"),
+    modalError: document.getElementById("modalError"),
+    modalPersonFields: document.getElementById("modalPersonFields"),
+    mPersonName: document.getElementById("mPersonName"),
+    mPersonDay: document.getElementById("mPersonDay"),
+    mPersonMonth: document.getElementById("mPersonMonth"),
+    modalGroupFields: document.getElementById("modalGroupFields"),
+    mGroupName: document.getElementById("mGroupName"),
     pName: document.getElementById("pName"),
     pDay: document.getElementById("pDay"),
     pMonth: document.getElementById("pMonth"),
     addPersonBtn: document.getElementById("addPersonBtn"),
     addHint: document.getElementById("addHint"),
     peopleList: document.getElementById("peopleList"),
+    sortPeople: document.getElementById("sortPeople"),
 
     axis: document.getElementById("axis"),
     band: document.getElementById("band"),
@@ -553,8 +740,10 @@
     windowLen: document.getElementById("windowLen"),
     bestWins: document.getElementById("bestWins"),
     worstWins: document.getElementById("worstWins"),
+    windowSummary: document.getElementById("windowSummary"),
 
     exportBtn: document.getElementById("exportBtn"),
+    exportGroupBtn: document.getElementById("exportGroupBtn"),
     importBtn: document.getElementById("importBtn"),
     resetBtn: document.getElementById("resetBtn"),
     fileInput: document.getElementById("fileInput"),
@@ -563,6 +752,42 @@
   // ---------- Core selectors ----------
   function currentGroup(){
     return state.data.groups.find(g => g.id === state.selectedGroupId) || state.data.groups[0];
+  }
+
+  function setSelectedDoy(doy, save=true){
+    state.selectedDoy = clamp(parseInt(doy,10) || 1, 1, 365);
+    const g = currentGroup();
+    g.lastDoy = state.selectedDoy;
+    if(save) saveData();
+  }
+
+  function clearSelectedWindow(){
+    state.selectedWindowStart = null;
+    state.selectedWindowLen = null;
+    if(el.windowSummary){
+      el.windowSummary.style.display = "none";
+      el.windowSummary.innerHTML = "";
+    }
+  }
+
+  function renderBirthdayMarkers(){
+    const g = currentGroup();
+    const people = g.people || [];
+    // remove old markers
+    el.band.querySelectorAll(".bdayMark").forEach(n => n.remove());
+    if(people.length === 0) return;
+
+    const seen = new Set();
+    for(const p of people){
+      const d = doyFromDM(p.day, p.month);
+      if(seen.has(d)) continue;
+      seen.add(d);
+      const mark = document.createElement("div");
+      mark.className = "bdayMark";
+      mark.style.left = ((d - 0.5) / 365 * 100) + "%";
+      mark.title = `Cumple: ${p.name} (${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")})`;
+      el.band.appendChild(mark);
+    }
   }
 
   function ensureSelectedGroup(){
@@ -710,45 +935,143 @@
     el.groupSelect.value = state.selectedGroupId;
   }
 
-  function renderPeopleList(){
+  
+  // ---------- Modal helpers ----------
+  let modalMode = null; // "editPerson" | "renameGroup"
+  let modalPersonId = null;
+
+  function openModal(mode, payload){
+    modalMode = mode;
+    modalPersonId = null;
+    el.modalError.style.display = "none";
+    el.modalError.textContent = "";
+
+    if(mode === "editPerson"){
+      el.modalTitle.textContent = "Editar persona";
+      el.modalPersonFields.style.display = "";
+      el.modalGroupFields.style.display = "none";
+
+      const p = payload;
+      modalPersonId = p.id;
+      el.mPersonName.value = p.name || "";
+      el.mPersonDay.value = String(p.day ?? "");
+      el.mPersonMonth.value = String(p.month ?? "");
+      setTimeout(()=> el.mPersonName.focus(), 0);
+    }else if(mode === "renameGroup"){
+      el.modalTitle.textContent = "Renombrar grupo";
+      el.modalPersonFields.style.display = "none";
+      el.modalGroupFields.style.display = "";
+      el.mGroupName.value = String(payload?.name ?? "");
+      setTimeout(()=> el.mGroupName.focus(), 0);
+      el.mGroupName.select?.();
+    }
+
+    el.modalOverlay.classList.remove("hidden");
+  }
+
+  function closeModal(){
+    el.modalOverlay.classList.add("hidden");
+    modalMode = null;
+    modalPersonId = null;
+  }
+
+  function showModalError(msg){
+    el.modalError.textContent = msg;
+    el.modalError.style.display = "block";
+  }
+
+function renderPeopleList(){
     const g = currentGroup();
     el.peopleList.innerHTML = "";
 
+    // Sync selector
+    if(el.sortPeople){
+      el.sortPeople.value = g.sort || "added";
+    }
+
     if(!g.people || g.people.length === 0){
-      const d = document.createElement("div");
-      d.className = "tiny muted";
-      d.textContent = "Este grupo no tiene personas todavía.";
-      el.peopleList.appendChild(d);
+      const box = document.createElement("div");
+      box.className = "emptyBox";
+      box.innerHTML = `
+        <div class="emptyTitle">Este grupo está vacío</div>
+        <div class="tiny muted" style="margin-top:6px; line-height:1.35;">
+          • Sumá personas con <b>Nombre + Día + Mes</b>.<br/>
+          • Luego explorá el año con el semáforo o el control de día.<br/>
+          • Si querés entenderlo rápido, cargá un ejemplo.
+        </div>
+      `;
+
+      const btn = document.createElement("button");
+      btn.className = "secondary";
+      btn.style.marginTop = "10px";
+      btn.textContent = "Cargar ejemplo";
+      btn.onclick = () => { loadExampleIntoCurrentGroup(); };
+
+      box.appendChild(btn);
+      el.peopleList.appendChild(box);
       return;
     }
 
-    for(const p of g.people){
+    let people = Array.from(g.people);
+
+    const sortMode = g.sort || "added";
+    if(sortMode === "name"){
+      people.sort((a,b)=> String(a.name||"").localeCompare(String(b.name||""), "es", { sensitivity:"base" }));
+    }else if(sortMode === "bday"){
+      people.sort((a,b)=> doyFromDM(a.day,a.month) - doyFromDM(b.day,b.month));
+    }
+
+    for(const p of people){
       const item = document.createElement("div");
       item.className = "item";
 
+      // IZQ: nombre + fecha (2 líneas, sin '...')
       const left = document.createElement("div");
-      left.innerHTML = `<b>${escapeHtml(p.name)}</b><div class="tiny muted">${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")}</div>`;
+      left.className = "personLeft";
 
+      const nameLine = document.createElement("div");
+      nameLine.className = "personName";
+      const b = document.createElement("b");
+      b.textContent = (p.name ?? "").toString();
+      nameLine.appendChild(b);
+
+      const dateLine = document.createElement("div");
+      dateLine.className = "tiny muted";
+      dateLine.textContent = `${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")}`;
+
+      left.appendChild(nameLine);
+      left.appendChild(dateLine);
+
+      // DER: acciones fijas
       const right = document.createElement("div");
-      right.style.display = "flex";
-      right.style.gap = "8px";
+      right.className = "personActions";
 
       const pill = document.createElement("div");
       pill.className = "pill mono";
-      pill.textContent = `Día ${doyFromDM(p.day,p.month)}`;
+      pill.textContent = `Día ${doyFromDM(p.day, p.month)}`;
+
+      const edit = document.createElement("button");
+      edit.className = "secondary";
+      edit.textContent = "Editar";
+      edit.onclick = () => openModal("editPerson", p);
 
       const del = document.createElement("button");
       del.className = "secondary";
-      del.style.width = "92px";
       del.textContent = "Quitar";
       del.onclick = () => {
+        const ok = confirm(`¿Quitar a "${p.name}" del grupo?
+
+Esto no se puede deshacer.`);
+        if(!ok) return;
         g.people = g.people.filter(x => x.id !== p.id);
         saveData();
         recomputeAndRender();
       };
 
       right.appendChild(pill);
+      right.appendChild(edit);
       right.appendChild(del);
+
       item.appendChild(left);
       item.appendChild(right);
       el.peopleList.appendChild(item);
@@ -762,17 +1085,19 @@
       div.className = "dayCell";
       const avg = state.cache.avg[i-1];
       const cb = colorBucket(avg);
-      div.style.background = cb.fill || "#222";
+      div.style.background = cb.c || "#222";
       div.title = `Día ${i} (${dateFromDoy(i)}) — promedio ${avg?.toFixed(1) ?? "—"} ${cb.label}`;
       if(i === state.selectedDoy) div.classList.add("sel");
       div.onclick = () => {
-        state.selectedDoy = i;
-        el.doyRange.value = String(i);
+        setSelectedDoy(i);
+        el.doyRange.value = String(state.selectedDoy);
+        clearSelectedWindow();
         renderRightPanel();
         renderBand();
       };
       el.band.appendChild(div);
     }
+    renderBirthdayMarkers();
   }
 
   function renderRightPanel(){
@@ -806,7 +1131,7 @@
 
     const cb = colorBucket(avg);
     el.avgBig.textContent = `${avg.toFixed(0)}% ${cb.label}`;
-    el.dot.style.background = cb.dot;
+    el.dot.style.background = cb.c;
 
     el.minMax.textContent = `${mn.toFixed(0)}% / ${mx.toFixed(0)}%`;
     el.minMaxNames.textContent = `${mnN} / ${mxN}`;
@@ -841,6 +1166,9 @@
       for(const w of items){
         const card = document.createElement("div");
         card.className = "winCard";
+        if(state.selectedWindowStart === w.start && state.selectedWindowLen === L){
+          card.classList.add("selected");
+        }
 
         const left = document.createElement("div");
         left.className = "left";
@@ -854,7 +1182,7 @@
         const cb = colorBucket(w.avg);
         const dot = document.createElement("span");
         dot.className = "dot";
-        dot.style.background = cb.dot;
+        dot.style.background = cb.c;
         const txt = document.createElement("span");
         txt.className = "mono";
         txt.textContent = `${w.avg.toFixed(0)}% ${cb.label}`;
@@ -868,10 +1196,13 @@
         card.style.cursor = "pointer";
         card.title = "Click para ir al inicio";
         card.onclick = () => {
-          state.selectedDoy = w.start;
+          state.selectedWindowStart = w.start;
+          state.selectedWindowLen = L;
+          setSelectedDoy(w.start);
           el.doyRange.value = String(state.selectedDoy);
           renderRightPanel();
           renderBand();
+          renderWindows();
         };
 
         container.appendChild(card);
@@ -880,6 +1211,58 @@
 
     renderList(el.bestWins, best, "best");
     renderList(el.worstWins, worst, "worst");
+
+    // Summary of selected window
+    if(el.windowSummary){
+      if(state.selectedWindowStart && state.selectedWindowLen === L){
+        const start = state.selectedWindowStart;
+        const end = ((start - 1 + L - 1) % 365) + 1;
+
+        // compute avg/min/max of group avg inside window
+        let sum=0, cnt=0;
+        let minV=999, maxV=-999, minD=start, maxD=start;
+        for(let k=0;k<L;k++){
+          const d = ((start - 1 + k) % 365) + 1;
+          const v = state.cache.avg[d-1];
+          if(v==null) continue;
+          sum += v; cnt++;
+          if(v < minV){ minV=v; minD=d; }
+          if(v > maxV){ maxV=v; maxD=d; }
+        }
+        const wavg = cnt ? (sum/cnt) : null;
+
+        if(wavg == null){
+          el.windowSummary.style.display = "none";
+          el.windowSummary.innerHTML = "";
+        }else{
+          const cb = colorBucket(wavg);
+          el.windowSummary.style.display = "block";
+          el.windowSummary.innerHTML = `
+            <div class="rowLine">
+              <div class="title">Ventana seleccionada</div>
+              <div class="mono"><b>${dateFromDoy(start)} → ${dateFromDoy(end)}</b> · ${L} días</div>
+            </div>
+            <div class="hr" style="margin:10px 0;"></div>
+            <div class="rowLine">
+              <div class="tiny muted">Promedio de la ventana</div>
+              <div class="mono"><b>${wavg.toFixed(0)}%</b> ${cb.label}</div>
+            </div>
+            <div class="rowLine" style="margin-top:6px;">
+              <div class="tiny muted">Mejor día dentro</div>
+              <div class="mono">${dateFromDoy(maxD)} · <b>${maxV.toFixed(0)}%</b></div>
+            </div>
+            <div class="rowLine" style="margin-top:6px;">
+              <div class="tiny muted">Peor día dentro</div>
+              <div class="mono">${dateFromDoy(minD)} · <b>${minV.toFixed(0)}%</b></div>
+            </div>
+            <div class="tiny muted" style="margin-top:10px;">Tip: tocá otra ventana para comparar rápido.</div>
+          `;
+        }
+      }else{
+        el.windowSummary.style.display = "none";
+        el.windowSummary.innerHTML = "";
+      }
+    }
   }
 
   function recomputeAndRender(){
@@ -895,19 +1278,33 @@
   // ---------- Safety: basic HTML escape ----------
   function escapeHtml(s){
     return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
   }
 
   // ---------- Actions ----------
   el.groupSelect.addEventListener("change", () => {
     state.selectedGroupId = el.groupSelect.value;
     state.data.lastGroupId = state.selectedGroupId;
+
+    // restore last day per group (or keep current if none)
+    const g = currentGroup();
+    setSelectedDoy(g.lastDoy || 1, false);
+    el.doyRange.value = String(state.selectedDoy);
+
+    clearSelectedWindow();
     saveData();
     recomputeAndRender();
+  });
+
+  el.sortPeople.addEventListener("change", () => {
+    const g = currentGroup();
+    g.sort = el.sortPeople.value;
+    saveData();
+    renderPeopleList();
   });
 
   el.newGroupBtn.addEventListener("click", () => {
@@ -925,7 +1322,79 @@
     state.data.lastGroupId = id;
     saveData();
     recomputeAndRender();
+  })
+  el.renameGroupBtn.addEventListener("click", () => {
+    const g = currentGroup();
+    openModal("renameGroup", g);
   });
+
+  el.deleteGroupBtn.addEventListener("click", () => {
+    const g = currentGroup();
+    if(!g) return;
+
+    const msg =
+      `Eliminar el grupo "${g.name}"?\n\n` +
+      `Se perderán las personas cargadas en este dispositivo. (Esto no afecta a ningún otro dispositivo.)`;
+    if(!confirm(msg)) return;
+
+    state.data.groups = state.data.groups.filter(x => x.id !== g.id);
+
+    // Si no quedan grupos, recreamos el default para que la app nunca quede "vacía"
+    if(!state.data.groups.length){
+      state.data.groups = [ { id: "G001", name: "Mi grupo", people: [] } ];
+      state.selectedGroupId = "G001";
+      state.data.lastGroupId = "G001";
+    }else{
+      state.selectedGroupId = state.data.groups[0].id;
+      state.data.lastGroupId = state.selectedGroupId;
+    }
+
+    saveData();
+    recomputeAndRender();
+  });
+
+  // Modal events
+  el.modalCloseBtn.addEventListener("click", closeModal);
+  el.modalCancelBtn.addEventListener("click", closeModal);
+  el.modalOverlay.addEventListener("click", (e) => {
+    if(e.target === el.modalOverlay) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if(!el.modalOverlay.classList.contains("hidden") && e.key === "Escape") closeModal();
+  });
+
+  el.modalSaveBtn.addEventListener("click", () => {
+    const g = currentGroup();
+    if(modalMode === "editPerson"){
+      const name = (el.mPersonName.value || "").trim();
+      const day = parseInt(el.mPersonDay.value, 10);
+      const month = parseInt(el.mPersonMonth.value, 10);
+
+      if(!name) return showModalError("Poné un nombre.");
+      if(!Number.isFinite(month) || month < 1 || month > 12) return showModalError("El mes debe estar entre 1 y 12.");
+      if(!Number.isFinite(day) || day < 1 || day > daysInMonth(month)) return showModalError(`Día inválido para el mes ${month}.`);
+
+      const idx = g.people.findIndex(x => x.id === modalPersonId);
+      if(idx === -1) return showModalError("No encontré a la persona (¿se borró?).");
+
+      g.people[idx].name = name;
+      g.people[idx].day = day;
+      g.people[idx].month = month;
+
+      saveData();
+      recomputeAndRender();
+      closeModal();
+    }else if(modalMode === "renameGroup"){
+      const name = (el.mGroupName.value || "").trim();
+      if(!name) return showModalError("Poné un nombre para el grupo.");
+      g.name = name;
+      saveData();
+      recomputeAndRender();
+      closeModal();
+    }
+  });
+
+;
 
   el.addPersonBtn.addEventListener("click", () => {
     const name = el.pName.value.trim();
@@ -987,6 +1456,7 @@
   });
 
   el.windowLen.addEventListener("change", () => {
+    clearSelectedWindow();
     renderWindows();
   });
 
@@ -1002,7 +1472,32 @@
     URL.revokeObjectURL(url);
   });
 
-  el.importBtn.addEventListener("click", () => {
+  
+  el.exportGroupBtn.addEventListener("click", () => {
+    const g = currentGroup();
+    if(!g) return;
+
+    // Export "portable": un solo grupo, pensado para compartir/importar sin pisar todo.
+    const payload = {
+      kind: "singleGroup",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      group: JSON.parse(JSON.stringify(g))
+    };
+
+    const safeName = (g.name || "grupo").toString().trim().replace(/\s+/g,"_").replace(/[^a-zA-Z0-9_\-]/g,"");
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `ritmo_del_ano_${safeName || "grupo"}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+el.importBtn.addEventListener("click", () => {
     el.fileInput.value = "";
     el.fileInput.click();
   });
@@ -1013,6 +1508,43 @@
     try{
       const text = await file.text();
       const d = JSON.parse(text);
+
+      // Caso 1: archivo "portable" de un solo grupo (merge, no pisa todo)
+      if(d && d.kind === "singleGroup" && d.group){
+        const incoming = d.group;
+        incoming.people = Array.isArray(incoming.people) ? incoming.people : [];
+
+        // Generar nuevo ID de grupo para evitar colisiones
+        const nums = state.data.groups
+          .map(g => parseInt((g.id||"").replace("G",""),10))
+          .filter(n=>Number.isFinite(n));
+        const next = (nums.length ? Math.max(...nums) : 0) + 1;
+        const newId = "G" + String(next).padStart(3,"0");
+
+        const merged = {
+          id: newId,
+          name: (incoming.name || "Grupo importado").toString(),
+          people: incoming.people.map((p, i) => ({
+            id: "P" + newId + "_" + String(i+1).padStart(3,"0"),
+            name: (p.name || "Persona").toString(),
+            day: clampInt(p.day, 1, 31),
+            month: clampInt(p.month, 1, 12),
+          }))
+        };
+
+        // Confirmación suave (por si importan sin querer)
+        if(!confirm(`¿Importar el grupo “${merged.name}” a este dispositivo?\n\nSe va a agregar como un grupo nuevo (no reemplaza tus datos).`)) return;
+
+        state.data.groups.push(merged);
+        state.selectedGroupId = merged.id;
+        state.data.lastGroupId = merged.id;
+        saveData();
+        recomputeAndRender();
+        alert("Grupo importado ✅");
+        return;
+      }
+
+      // Caso 2: backup completo (reemplaza)
       if(!d.groups || !Array.isArray(d.groups) || d.groups.length === 0) throw new Error("JSON inválido: falta groups");
       // Basic normalization
       for(const g of d.groups){
@@ -1040,7 +1572,8 @@
 
   // ---------- Init ----------
   ensureSelectedGroup();
-  state.selectedDoy = dayOfYearToday();
+  const g0 = currentGroup();
+  setSelectedDoy(g0.lastDoy || dayOfYearToday(), false);
   el.doyRange.value = String(state.selectedDoy);
   recomputeAndRender();
 
