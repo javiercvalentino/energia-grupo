@@ -187,6 +187,49 @@
       text-align:center;
       min-width:160px;
     }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .chipMini{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:11px;
+      color:#cfe0ff;
+      white-space:nowrap;
+      line-height:1;
+    }
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,.10);
+      margin:10px 0;
+      border-radius:999px;
+    }
+    .bar{
+      height:8px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:8px;
+    }
+    .bar > span{
+      display:block;
+      height:100%;
+      width:0%;
+      background: rgba(255,255,255,.35);
+      border-radius:999px;
+      transition: width .18s ease;
+    }
     .minmaxBox #minMax{font-size:16px; font-weight:700; margin-top:2px}
     .minmaxBox #minMaxNames{margin-top:4px}
 
@@ -279,6 +322,18 @@
           <div class="tiny">Min / Max del día</div>
           <div class="mono" id="minMax">—</div>
           <div class="tiny muted" id="minMaxNames">—</div>
+
+          <div class="chips" id="minMaxChips" aria-label="Quién está más bajo y más alto hoy">
+            <span class="chipMini" id="chipMin">⬇ —</span>
+            <span class="chipMini" id="chipMax">⬆ —</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="tiny">Armonía del día</div>
+          <div class="mono" id="harmonyVal">—</div>
+          <div class="bar" aria-hidden="true"><span id="harmonyBar"></span></div>
+          <div class="tiny muted" id="harmonyHint">—</div>
         </div>
       </div>
 
@@ -401,6 +456,14 @@
     return { label:"🟢🔥", fill:getCSS("--gg"), dot:getCSS("--gg") };
   }
 
+
+  function harmonyDescriptor(h){
+    if(h === null) return { text:"—", dot:"#777" };
+    if(h >= 75) return { text:"alineados", dot:getCSS("--g") };
+    if(h >= 55) return { text:"medianamente alineados", dot:getCSS("--y") };
+    return { text:"desparejos", dot:getCSS("--o") };
+  }
+
   function clampInt(n, min, max){
     const x = Number(n);
     if(!Number.isFinite(x)) return null;
@@ -471,6 +534,12 @@
     dateLabel: document.getElementById("dateLabel"),
     minMax: document.getElementById("minMax"),
     minMaxNames: document.getElementById("minMaxNames"),
+
+    chipMin: document.getElementById("chipMin"),
+    chipMax: document.getElementById("chipMax"),
+    harmonyVal: document.getElementById("harmonyVal"),
+    harmonyBar: document.getElementById("harmonyBar"),
+    harmonyHint: document.getElementById("harmonyHint"),
 
     windowLen: document.getElementById("windowLen"),
     bestWins: document.getElementById("bestWins"),
@@ -717,6 +786,12 @@
       el.dot.style.background = "#777";
       el.minMax.textContent = "—";
       el.minMaxNames.textContent = "—";
+      el.chipMin.textContent = "⬇ —";
+      el.chipMax.textContent = "⬆ —";
+      el.harmonyVal.textContent = "—";
+      el.harmonyBar.style.width = "0%";
+      el.harmonyBar.style.background = "rgba(255,255,255,.35)";
+      el.harmonyHint.textContent = "—";
       return;
     }
 
@@ -726,6 +801,19 @@
 
     el.minMax.textContent = `${mn.toFixed(0)}% / ${mx.toFixed(0)}%`;
     el.minMaxNames.textContent = `${mnN} / ${mxN}`;
+
+    // Chips de lectura rápida
+    el.chipMin.textContent = `⬇ ${mnN} ${mn.toFixed(0)}%`;
+    el.chipMax.textContent = `⬆ ${mxN} ${mx.toFixed(0)}%`;
+
+    // Armonía del día (qué tan alineado está el grupo)
+    const spread = Math.max(0, mx - mn);
+    const harmony = Math.max(0, Math.min(100, 100 - spread));
+    const hd = harmonyDescriptor(harmony);
+    el.harmonyVal.textContent = `${harmony.toFixed(0)}%`;
+    el.harmonyBar.style.width = `${harmony.toFixed(0)}%`;
+    el.harmonyBar.style.background = hd.dot;
+    el.harmonyHint.textContent = `${hd.text} (diferencia: ${spread.toFixed(0)} pts)`;
   }
 
   function renderWindows(){
