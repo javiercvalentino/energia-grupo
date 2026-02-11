@@ -688,6 +688,40 @@
   border-top: 1px solid rgba(255,255,255,.08);
 }
 
+
+/* --- Accesibilidad: tipografías más cómodas (especialmente en celular) --- */
+:root{
+  --font-base: 15px;     /* desktop/base */
+  --font-mobile: 17px;   /* mobile */
+  --font-small: 13px;
+  --font-xsmall: 12px;
+}
+html{ -webkit-text-size-adjust: 100%; }
+
+body{
+  font-size: var(--font-base);
+  line-height: 1.35;
+}
+
+/* Textos secundarios */
+.sub{ font-size: var(--font-small); }
+.label, .hint, .muted, .legend, .privacy, .note{ font-size: var(--font-small); }
+.pill, .chip, .badge{ font-size: var(--font-xsmall); }
+
+/* Controles: clave para no necesitar zoom */
+input, select, textarea, button{
+  font-size: 15px;
+}
+
+/* Mobile: un escalón más grande + evita zoom en iOS (>=16px en inputs) */
+@media (max-width: 720px){
+  body{ font-size: var(--font-mobile); }
+  h1, .title{ font-size: 22px; }
+  .sub{ font-size: 14px; }
+  .pill, .chip, .badge{ font-size: 12px; }
+  input, select, textarea, button{ font-size: 16px; }
+}
+
 </style>
 </head>
 <body>
