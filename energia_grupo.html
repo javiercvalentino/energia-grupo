@@ -16,10 +16,10 @@
       --line:#233055;
       --chip:#1a2647;
 
-      --o:#FFD966;      /* 🟠 */
-      --y:#FFF2CC;      /* 🟡 */
-      --g:#C6E0B4;      /* 🟢 */
-      --gg:#A9D08E;     /* 🟢🔥 */
+      --o:#ff5c4d;      /* 🟠 */
+      --y:#ffc84a;      /* 🟡 */
+      --g:#63e08a;      /* 🟢 */
+      --gg:#18d878;     /* 🟢🔥 */
     }
     *{box-sizing:border-box}
     body{
@@ -78,21 +78,10 @@
       border:1px solid rgba(255,255,255,.08);
     }
     .item b{font-size:13px}
-
-    /* Personas: nombre flexible + acciones alineadas a la derecha (evita corrimientos) */
-    .personLeft{ flex:1; min-width:0; }
-    .personName{ display:block; white-space:normal; overflow:visible; text-overflow:unset; max-width:100%; }
-    .personActions{ display:flex; align-items:center; justify-content:flex-end; gap:8px; flex:0 0 auto; }
-    .personActions button{ width:82px; padding:8px 10px; font-size:12px; }
-    @media (max-width: 560px){
-      .personActions{ flex-wrap:wrap; justify-content:flex-end; }
-      .personActions button{ width:auto; min-width:78px; padding:8px 10px; font-size:12px; }
-    }
-
     .pill{
       display:inline-flex; align-items:center; justify-content:center;
-      padding:4px 9px;
-      min-width:64px;
+      padding:5px 10px;
+      min-width:72px;
       border-radius:999px;
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
@@ -132,7 +121,6 @@
 
 
     .band{
-      position:relative;
       display:grid;
       grid-template-columns: repeat(365, 1fr);
       gap:1px;
@@ -152,38 +140,7 @@
       background: rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.10);
     }
-    .dot{width:10px; height:10px; border-radius:999px; background:var(--g)}
-
-    .dotBig{width:22px; height:22px; border-radius:999px; background:var(--g); box-shadow:0 0 18px rgba(160,255,220,.25);}
-    /* Marcadores de cumpleaños en el semáforo (sutiles, dentro de la barra) */
-    .bdayMark{
-      position:absolute;
-      top:2px;
-      width:6px;
-      height:6px;
-      border-radius:999px;
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(0,0,0,.35);
-      box-shadow: 0 6px 16px rgba(0,0,0,.35);
-      transform: translateX(-50%);
-      cursor: help;
-      z-index: 5;
-    }
-    .winCard.selected{
-      border-color: rgba(106,168,255,.42);
-      box-shadow: 0 0 0 2px rgba(106,168,255,.16) inset;
-      background: rgba(106,168,255,.06);
-    }
-    .winSummary{
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-    }
-    .winSummary .rowLine{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-    .winSummary .title{ font-weight:800; letter-spacing:.2px; }
-
+    \.dot{width:18px; height:18px; border-radius:999px; background:var(--g)}
     .muted{color:var(--muted)}
     .mono{font-variant-numeric: tabular-nums}
     .sliderRow{display:flex; gap:12px; align-items:center; margin-top:10px}
@@ -216,7 +173,7 @@
     }
     .helpBox h3{
       margin:0 0 8px 0;
-      font-size: 11.5px;
+      font-size:12px;
       color:#dbe6ff;
       letter-spacing:.2px;
       text-transform: uppercase;
@@ -340,14 +297,405 @@
       display:none;
     }
 
-  </style>
+  
+    .dayCell{ position: relative; }
+    .dayCell.bday::after{
+      content:"";
+      position:absolute;
+      top: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 0 8px rgba(255,255,255,.35);
+      opacity: .9;
+    }
+
+
+    /* --- Personas: nombre largo + acciones fijas a la derecha (sin corrimientos) --- */
+    .personRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      width:100%;
+      min-width:0;
+    }
+    .personLeft{ flex:1 1 auto; min-width:0; }
+    .personName{
+      display:block;
+      font-weight:700;
+      font-size:13px;
+      line-height:1.15;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .personDate{
+      font-size:12px;
+      color: var(--muted);
+      margin-top:2px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .personActions{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+    }
+    .personActions .pill{
+      min-width:62px;
+      padding:5px 9px;
+      font-size:11px;
+    }
+    .personActions button{
+      padding:8px 10px;
+      font-size:12px;
+      border-radius:12px;
+      width:84px;
+    }
+    @media (max-width:560px){
+      .personActions{ flex-wrap:wrap; justify-content:flex-end; }
+      .personActions button{ width:auto; min-width:78px; }
+    }
+
+
+    /* --- Ajuste fino: botones Editar/Quitar más chicos --- */
+    .personActions button{
+      padding: 6px 8px;
+      font-size: 11px;
+      border-radius: 10px;
+      width: 72px;
+    }
+    @media (max-width:560px){
+      .personActions button{
+        padding: 6px 8px;
+        font-size: 11px;
+        min-width: 68px;
+      }
+    }
+
+
+    /* --- Orden: alineado (sin sobresalir) y con aire respecto a la lista --- */
+    .peopleOrderRow{
+      margin-bottom: 14px;
+    }
+    .peopleOrderRow > div{
+      width: 100%;
+      min-width: 0;
+    }
+    #sortPeople{
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      display: block;
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: var(--txt);
+      /* Importante: evitar el "extra" visual que hace que parezca más ancho */
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-clip: padding-box;
+    }
+    /* Flecha estética sin afectar el ancho */
+    .peopleOrderRow .peopleOrderArrow{
+      position: relative;
+    }
+    .peopleOrderRow .peopleOrderArrow::after{
+      content: "▾";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,.70);
+      pointer-events: none;
+      font-size: 14px;
+    }
+    .peopleOrderRow .peopleOrderArrow #sortPeople{
+      padding-right: 36px;
+    }
+
+    /* --- Semáforo anual: un poco más presente (sin apagar colores) --- */
+    .band{
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    /* --- Cumples en el semáforo: marca estética (🎂) --- */
+    .dayCell.bday::after{
+      content: "🎂";
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,.55));
+      pointer-events: none;
+    }
+    /* pequeño "palo" para que se entienda la marca */
+    .dayCell.bday::before{
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 6px;
+      background: rgba(255,255,255,.75);
+      border-radius: 2px;
+      opacity: .65;
+      pointer-events: none;
+    }
+
+
+    /* --- Orden: ancho perfecto dentro del panel (sin desborde horizontal) --- */
+    .peopleOrderRow{
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin-top: 10px;
+      margin-bottom: 16px; /* aire antes de la lista */
+    }
+    .peopleOrderArrow{
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden; /* recorta cualquier "extra" nativo del select */
+      border-radius: 16px;
+    }
+    #sortPeople{
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      display: block;
+      min-width: 0;
+      margin: 0;
+      /* eliminamos apariencia nativa que suele desbordar en mobile */
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    /* --- Cumples en el semáforo: banderita minimalista --- */
+    .dayCell{ position: relative; }
+    .dayCell.bday::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:-8px;
+      transform: translateX(-50%);
+      width:1px;
+      height:10px;
+      background: rgba(255,255,255,.75);
+      border-radius: 1px;
+      pointer-events:none;
+    }
+    .dayCell.bday::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:-8px;
+      transform: translateX(0);
+      width:0;height:0;
+      border-top:4px solid transparent;
+      border-bottom:4px solid transparent;
+      border-left:6px solid rgba(255,214,110,.95);
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.35));
+      pointer-events:none;
+    }
+
+
+/* === Cumpleaños visibles sobre el semáforo === */
+.dayCell{
+  position: relative;
+}
+.dayCell.bday::after{
+  content: "🎂";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  cursor: pointer;
+}
+.dayCell.bday:hover::before{
+  content: attr(data-bday);
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,25,35,.95);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0,0,0,.35);
+  pointer-events: none;
+  z-index: 10;
+}
+
+
+    /* --- Semáforo: resaltar HOY (guía visual) --- */
+    .dayCell.today{
+      outline: 2px solid rgba(255,255,255,.85);
+      outline-offset: -2px;
+      box-shadow: 0 0 0 3px rgba(0,0,0,.28) inset;
+    }
+
+
+/* --- Pulido: Nombre del grupo con más jerarquía --- */
+#groupTitle{
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  margin-bottom: 2px;
+}
+@media (max-width: 560px){
+  #groupTitle{ font-size: 19px; }
+}
+
+/* --- "Qué es y qué no es" (link + modal) --- */
+.aboutLink{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.92);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+.aboutLink:hover{ background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18); }
+.aboutLink .kicker{ opacity: .9; }
+.aboutLink small{ color: rgba(255,255,255,.70); font-weight: 500; }
+
+.aboutOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+}
+.aboutOverlay.show{ display: flex; }
+.aboutModal{
+  width: min(860px, 100%);
+  max-height: min(78vh, 720px);
+  overflow: auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(18,22,30,.96);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  padding: 16px 16px 14px;
+}
+.aboutHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.aboutHeader h3{
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: .2px;
+}
+.aboutClose{
+  border-radius: 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.92);
+  cursor: pointer;
+}
+.aboutClose:hover{ background: rgba(255,255,255,.06); }
+.aboutBody{
+  color: rgba(255,255,255,.88);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.aboutBody h4{
+  margin: 14px 0 6px;
+  font-size: 13px;
+  color: rgba(255,255,255,.95);
+}
+.aboutBody ul{ margin: 8px 0 0 18px; }
+.aboutBody li{ margin: 4px 0; }
+.aboutBody .mutedP{ color: rgba(255,255,255,.72); }
+.aboutBody .note{
+  display:inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+
+/* --- About modal (Qué es y qué no es): pulido final --- */
+.aboutModal{
+  display:flex;
+  flex-direction: column;
+  max-height: min(78vh, 720px);
+}
+.aboutHeader{
+  padding: 18px 18px 8px 18px;
+}
+.aboutTitle{
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+.aboutBody{
+  padding: 12px 18px 10px 18px;
+  overflow: auto;
+}
+.aboutBody h4{
+  margin: 18px 0 10px;
+  font-size: 14px;
+  letter-spacing: .2px;
+  text-transform: none;
+}
+.aboutBody ul{
+  margin: 8px 0 0 18px;
+}
+.aboutBody li{
+  margin: 6px 0;
+}
+.aboutFooter{
+  padding: 12px 18px 18px 18px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+</style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
       <h1>Ritmo del Año</h1>
-      <div class="sub">V2 — mini web-app local (sin cuentas) · guardado automático en tu navegador</div>
+      <div class="sub">mini web-app local · guardado automático en tu navegador</div>
     </div>
   </header>
 
@@ -393,26 +741,27 @@
 
       <div class="hr"></div>
 
-      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px;">
-        <h2 style="margin:0;">Personas del grupo</h2>
-        <div style="width: 150px;">
-          <label for="sortPeople" style="margin:0 0 6px;">Orden</label>
-          <select id="sortPeople">
-            <option value="added">Ingreso</option>
-            <option value="name">Nombre</option>
-            <option value="bday">Cumple</option>
-          </select>
-        </div>
-      </div>
-      <div class="list" id="peopleList" style="margin-top:10px;"></div>
+      <h2>Personas del grupo</h2>
+          <div class="peopleOrderRow" style="margin-top:10px">
+            <div>
+              <label style="margin-bottom:6px;">Orden</label>
+              <div class="peopleOrderArrow"><select id="sortPeople">
+                <option value="Ingreso">Ingreso</option>
+                <option value="Nombre">Nombre</option>
+                <option value="Cumple">Cumple</option>
+              </select></div>
+            </div>
+          </div>
+
+      <div class="list" id="peopleList"></div>
 
       <div class="hr"></div>
 
       <h2>Backup</h2>
       <div class="footerBtns">
-        <button class="secondary" id="exportBtn">Exportar JSON</button>
+        <button class="secondary" id="exportBtn">Exportar respaldo</button>
         <button class="secondary" id="exportGroupBtn">Exportar grupo</button>
-        <button class="secondary" id="importBtn">Importar JSON</button>
+        <button class="secondary" id="importBtn">Importar respaldo</button>
         <button class="secondary danger" id="resetBtn">Reset (este dispositivo)</button>
       </div>
       <input id="fileInput" type="file" accept="application/json" style="display:none" />
@@ -425,7 +774,7 @@
           <div class="muted" id="groupTitle">Grupo</div>
           <div class="big mono" id="avgBig">—</div>
           <div class="badge" style="margin-top:10px;">
-            <span class="dotBig" id="dot"></span>
+            <span class="dot" id="dot"></span>
             <span class="mono" id="dayLabel">Día —</span>
             <span class="muted" id="dateLabel">—/—</span>
           </div>
@@ -443,7 +792,6 @@
           <div class="divider"></div>
 
           <div class="tiny">Armonía del día</div>
-          <div class="tiny muted" style="margin-top:-2px;">Qué tan alineado está el grupo hoy.</div>
           <div class="mono" id="harmonyVal">—</div>
           <div class="bar" aria-hidden="true"><span id="harmonyBar"></span></div>
           <div class="tiny muted" id="harmonyHint">—</div>
@@ -476,15 +824,14 @@
 
       <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
         <div>
-          <h2 style="margin:0 0 4px 0;">Mejores ventanas</h2><div class="tiny muted" style="margin-bottom:8px;">Períodos con mayor energía promedio.</div>
+          <h2 style="margin:0 0 8px 0;">Mejores ventanas</h2>
           <div class="windows" id="bestWins"></div>
         </div>
         <div>
-          <h2 style="margin:0 0 4px 0;">Peores ventanas</h2><div class="tiny muted" style="margin-bottom:8px;">Períodos con menor energía promedio.</div>
+          <h2 style="margin:0 0 8px 0;">Peores ventanas</h2>
           <div class="windows" id="worstWins"></div>
         </div>
       </div>
-      <div id="windowSummary" class="winSummary" style="display:none;"></div>
 
       <div class="hr"></div>
       <div class="helpBox" id="helpBox">
@@ -496,10 +843,15 @@
           <li><b>Mirá el promedio</b> y el <b>Min/Max del día</b> para entender el ritmo del grupo.</li>
           <li><b>Usá las ventanas</b> (mejores/peores) como referencia para elegir timing.</li>
         </ol>
-        <div class="legend">
+<div class="legend">
           <div><b>Leyenda de colores (promedio)</b>: 🟠 &lt;55 · 🟡 55–70 · 🟢 70–85 · 🟢🔥 ≥85</div>
           <div style="margin-top:6px;">Modelo simbólico de ciclos: no predice futuro; ayuda a elegir momentos.</div>
-          <div style="margin-top:6px;">Privacidad: los datos se guardan <b>solo en tu dispositivo</b>. Podés <b>exportar/importar JSON</b> para compartir con familiares o amigos.</div>
+          <div style="margin-top:6px;">Privacidad: los datos se guardan <b>solo en tu dispositivo</b>. Podés <b>exportar/importar JSON</b> para compartir con familiares o amigos.
+
+        <button class="aboutLink" id="aboutBtn" type="button" aria-haspopup="dialog" aria-controls="aboutOverlay">
+          <span class="kicker">ℹ️ Qué es y qué no es</span>
+        </button>
+</div>
         </div>
       </div>
       </div>
@@ -553,6 +905,8 @@
 <script>
   "use strict";
 
+  let sortMode = "Ingreso";
+
   // ---------- Config ----------
   const STORAGE_KEY = "energia_grupo_web_v2";
 
@@ -570,6 +924,14 @@
   function doyFromDM(day, month){
     return monthStarts[month-1] + day; // 1..365
   }
+
+  function doyToday(){
+    const now = new Date();
+    const d = now.getDate();
+    const m = now.getMonth()+1;
+    return doyFromDM(d,m);
+  }
+
 
   function dateFromDoy(doy){
     const base = new Date(2001,0,1);
@@ -606,12 +968,11 @@
   }
 
   function colorBucket(avg){
-    // Paleta única (misma intensidad para punto grande y semáforo)
-    if(avg==null) return { c:"#222", label:"" };
-    if(avg < 55) return { c:"#ff5c4d", label:"" };     // rojo vivo
-    if(avg < 70) return { c:"#ffc84a", label:"" };     // amarillo vivo
-    if(avg < 85) return { c:"#63e08a", label:"" };     // verde claro vivo
-    return { c:"#18d878", label:"" };                  // verde intenso
+    if(avg === null) return { label:"—", fill:"#222", dot:"#777" };
+    if(avg < 55) return { label:"🟠", fill:getCSS("--o"), dot:getCSS("--o") };
+    if(avg < 70) return { label:"🟡", fill:getCSS("--y"), dot:getCSS("--y") };
+    if(avg < 85) return { label:"🟢", fill:getCSS("--g"), dot:getCSS("--g") };
+    return { label:"🟢🔥", fill:getCSS("--gg"), dot:getCSS("--gg") };
   }
 
 
@@ -663,9 +1024,9 @@
     }
 
     g.people = [
-      { id: "P_EX_1", name: "Luna", day: 6, month: 4 },
-      { id: "P_EX_2", name: "Mateo", day: 19, month: 7 },
-      { id: "P_EX_3", name: "Mora", day: 11, month: 12 },
+      { id: "P_EX_1", name: "Ana", day: 15, month: 3 },
+      { id: "P_EX_2", name: "Bruno", day: 2, month: 7 },
+      { id: "P_EX_3", name: "Carla", day: 21, month: 11 },
     ];
 
     saveData();
@@ -680,8 +1041,6 @@ function saveData(){
     data: loadData(),
     selectedGroupId: null,
     selectedDoy: 1,
-    selectedWindowStart: null,
-    selectedWindowLen: null,
     cache: {
       avg: new Array(365).fill(null),
       min: new Array(365).fill(null),
@@ -740,7 +1099,6 @@ function saveData(){
     windowLen: document.getElementById("windowLen"),
     bestWins: document.getElementById("bestWins"),
     worstWins: document.getElementById("worstWins"),
-    windowSummary: document.getElementById("windowSummary"),
 
     exportBtn: document.getElementById("exportBtn"),
     exportGroupBtn: document.getElementById("exportGroupBtn"),
@@ -752,42 +1110,6 @@ function saveData(){
   // ---------- Core selectors ----------
   function currentGroup(){
     return state.data.groups.find(g => g.id === state.selectedGroupId) || state.data.groups[0];
-  }
-
-  function setSelectedDoy(doy, save=true){
-    state.selectedDoy = clamp(parseInt(doy,10) || 1, 1, 365);
-    const g = currentGroup();
-    g.lastDoy = state.selectedDoy;
-    if(save) saveData();
-  }
-
-  function clearSelectedWindow(){
-    state.selectedWindowStart = null;
-    state.selectedWindowLen = null;
-    if(el.windowSummary){
-      el.windowSummary.style.display = "none";
-      el.windowSummary.innerHTML = "";
-    }
-  }
-
-  function renderBirthdayMarkers(){
-    const g = currentGroup();
-    const people = g.people || [];
-    // remove old markers
-    el.band.querySelectorAll(".bdayMark").forEach(n => n.remove());
-    if(people.length === 0) return;
-
-    const seen = new Set();
-    for(const p of people){
-      const d = doyFromDM(p.day, p.month);
-      if(seen.has(d)) continue;
-      seen.add(d);
-      const mark = document.createElement("div");
-      mark.className = "bdayMark";
-      mark.style.left = ((d - 0.5) / 365 * 100) + "%";
-      mark.title = `Cumple: ${p.name} (${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")})`;
-      el.band.appendChild(mark);
-    }
   }
 
   function ensureSelectedGroup(){
@@ -984,9 +1306,11 @@ function renderPeopleList(){
     const g = currentGroup();
     el.peopleList.innerHTML = "";
 
-    // Sync selector
-    if(el.sortPeople){
-      el.sortPeople.value = g.sort || "added";
+    const people = Array.isArray(g.people) ? [...g.people] : [];
+    if(sortMode === "Nombre"){
+      people.sort((a,b)=> String(a.name||"").localeCompare(String(b.name||""), "es", {sensitivity:"base"}));
+    }else if(sortMode === "Cumple"){
+      people.sort((a,b)=> doyFromDM(a.day,a.month) - doyFromDM(b.day,b.month));
     }
 
     if(!g.people || g.people.length === 0){
@@ -1005,46 +1329,38 @@ function renderPeopleList(){
       btn.className = "secondary";
       btn.style.marginTop = "10px";
       btn.textContent = "Cargar ejemplo";
-      btn.onclick = () => { loadExampleIntoCurrentGroup(); };
+      btn.onclick = () => {
+        loadExampleIntoCurrentGroup();
+      };
 
       box.appendChild(btn);
       el.peopleList.appendChild(box);
       return;
     }
 
-    let people = Array.from(g.people);
-
-    const sortMode = g.sort || "added";
-    if(sortMode === "name"){
-      people.sort((a,b)=> String(a.name||"").localeCompare(String(b.name||""), "es", { sensitivity:"base" }));
-    }else if(sortMode === "bday"){
-      people.sort((a,b)=> doyFromDM(a.day,a.month) - doyFromDM(b.day,b.month));
-    }
-
     for(const p of people){
       const item = document.createElement("div");
       item.className = "item";
 
-      // IZQ: nombre + fecha (2 líneas, sin '...')
+      const row = document.createElement("div");
+      row.className = "personRow";
+
       const left = document.createElement("div");
       left.className = "personLeft";
 
-      const nameLine = document.createElement("div");
-      nameLine.className = "personName";
-      const b = document.createElement("b");
-      b.textContent = (p.name ?? "").toString();
-      nameLine.appendChild(b);
+      const nameEl = document.createElement("span");
+      nameEl.className = "personName";
+      nameEl.textContent = String(p.name || "");
 
-      const dateLine = document.createElement("div");
-      dateLine.className = "tiny muted";
-      dateLine.textContent = `${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")}`;
+      const dateEl = document.createElement("div");
+      dateEl.className = "personDate";
+      dateEl.textContent = `${String(p.day).padStart(2,"0")}/${String(p.month).padStart(2,"0")}`;
 
-      left.appendChild(nameLine);
-      left.appendChild(dateLine);
+      left.appendChild(nameEl);
+      left.appendChild(dateEl);
 
-      // DER: acciones fijas
-      const right = document.createElement("div");
-      right.className = "personActions";
+      const actions = document.createElement("div");
+      actions.className = "personActions";
 
       const pill = document.createElement("div");
       pill.className = "pill mono";
@@ -1059,45 +1375,55 @@ function renderPeopleList(){
       del.className = "secondary";
       del.textContent = "Quitar";
       del.onclick = () => {
-        const ok = confirm(`¿Quitar a "${p.name}" del grupo?
-
-Esto no se puede deshacer.`);
-        if(!ok) return;
+        if(!confirm(`¿Quitar a ${p.name} del grupo?`)) return;
         g.people = g.people.filter(x => x.id !== p.id);
         saveData();
         recomputeAndRender();
       };
 
-      right.appendChild(pill);
-      right.appendChild(edit);
-      right.appendChild(del);
+      actions.appendChild(pill);
+      actions.appendChild(edit);
+      actions.appendChild(del);
 
-      item.appendChild(left);
-      item.appendChild(right);
+      row.appendChild(left);
+      row.appendChild(actions);
+
+      item.appendChild(row);
       el.peopleList.appendChild(item);
     }
   }
 
   function renderBand(){
+    const today = doyToday();
     el.band.innerHTML = "";
+    const g = currentGroup();
+    const bdaySet = new Set((g.people||[]).map(p=>doyFromDM(p.day,p.month)));
+    const bdayNames = Object.create(null);
+    for(const p of (g.people||[])){
+      const d = doyFromDM(p.day,p.month);
+      (bdayNames[d] ||= []).push(p.name);
+    }
     for(let i=1;i<=365;i++){
       const div = document.createElement("div");
       div.className = "dayCell";
+      if(i === today) div.classList.add("today");
+      if(bdaySet.has(i)){
+        div.classList.add("bday");
+        div.setAttribute("data-bday", "Cumple: " + (bdayNames[i]||[]).join(", "));
+      }
       const avg = state.cache.avg[i-1];
       const cb = colorBucket(avg);
-      div.style.background = cb.c || "#222";
-      div.title = `Día ${i} (${dateFromDoy(i)}) — promedio ${avg?.toFixed(1) ?? "—"} ${cb.label}`;
+      div.style.background = cb.fill || "#222";
+      div.title = `Día ${i} (${dateFromDoy(i)}) — promedio ${avg?.toFixed(1) ?? "—"} ${cb.label}` + (bdaySet.has(i) ? `\nCumple: ${(bdayNames[i]||[]).join(", ")}` : "");
       if(i === state.selectedDoy) div.classList.add("sel");
       div.onclick = () => {
-        setSelectedDoy(i);
-        el.doyRange.value = String(state.selectedDoy);
-        clearSelectedWindow();
+        state.selectedDoy = i;
+        el.doyRange.value = String(i);
         renderRightPanel();
         renderBand();
       };
       el.band.appendChild(div);
     }
-    renderBirthdayMarkers();
   }
 
   function renderRightPanel(){
@@ -1131,7 +1457,7 @@ Esto no se puede deshacer.`);
 
     const cb = colorBucket(avg);
     el.avgBig.textContent = `${avg.toFixed(0)}% ${cb.label}`;
-    el.dot.style.background = cb.c;
+    el.dot.style.background = cb.dot;
 
     el.minMax.textContent = `${mn.toFixed(0)}% / ${mx.toFixed(0)}%`;
     el.minMaxNames.textContent = `${mnN} / ${mxN}`;
@@ -1166,9 +1492,6 @@ Esto no se puede deshacer.`);
       for(const w of items){
         const card = document.createElement("div");
         card.className = "winCard";
-        if(state.selectedWindowStart === w.start && state.selectedWindowLen === L){
-          card.classList.add("selected");
-        }
 
         const left = document.createElement("div");
         left.className = "left";
@@ -1182,7 +1505,7 @@ Esto no se puede deshacer.`);
         const cb = colorBucket(w.avg);
         const dot = document.createElement("span");
         dot.className = "dot";
-        dot.style.background = cb.c;
+        dot.style.background = cb.dot;
         const txt = document.createElement("span");
         txt.className = "mono";
         txt.textContent = `${w.avg.toFixed(0)}% ${cb.label}`;
@@ -1196,13 +1519,10 @@ Esto no se puede deshacer.`);
         card.style.cursor = "pointer";
         card.title = "Click para ir al inicio";
         card.onclick = () => {
-          state.selectedWindowStart = w.start;
-          state.selectedWindowLen = L;
-          setSelectedDoy(w.start);
+          state.selectedDoy = w.start;
           el.doyRange.value = String(state.selectedDoy);
           renderRightPanel();
           renderBand();
-          renderWindows();
         };
 
         container.appendChild(card);
@@ -1211,62 +1531,11 @@ Esto no se puede deshacer.`);
 
     renderList(el.bestWins, best, "best");
     renderList(el.worstWins, worst, "worst");
-
-    // Summary of selected window
-    if(el.windowSummary){
-      if(state.selectedWindowStart && state.selectedWindowLen === L){
-        const start = state.selectedWindowStart;
-        const end = ((start - 1 + L - 1) % 365) + 1;
-
-        // compute avg/min/max of group avg inside window
-        let sum=0, cnt=0;
-        let minV=999, maxV=-999, minD=start, maxD=start;
-        for(let k=0;k<L;k++){
-          const d = ((start - 1 + k) % 365) + 1;
-          const v = state.cache.avg[d-1];
-          if(v==null) continue;
-          sum += v; cnt++;
-          if(v < minV){ minV=v; minD=d; }
-          if(v > maxV){ maxV=v; maxD=d; }
-        }
-        const wavg = cnt ? (sum/cnt) : null;
-
-        if(wavg == null){
-          el.windowSummary.style.display = "none";
-          el.windowSummary.innerHTML = "";
-        }else{
-          const cb = colorBucket(wavg);
-          el.windowSummary.style.display = "block";
-          el.windowSummary.innerHTML = `
-            <div class="rowLine">
-              <div class="title">Ventana seleccionada</div>
-              <div class="mono"><b>${dateFromDoy(start)} → ${dateFromDoy(end)}</b> · ${L} días</div>
-            </div>
-            <div class="hr" style="margin:10px 0;"></div>
-            <div class="rowLine">
-              <div class="tiny muted">Promedio de la ventana</div>
-              <div class="mono"><b>${wavg.toFixed(0)}%</b> ${cb.label}</div>
-            </div>
-            <div class="rowLine" style="margin-top:6px;">
-              <div class="tiny muted">Mejor día dentro</div>
-              <div class="mono">${dateFromDoy(maxD)} · <b>${maxV.toFixed(0)}%</b></div>
-            </div>
-            <div class="rowLine" style="margin-top:6px;">
-              <div class="tiny muted">Peor día dentro</div>
-              <div class="mono">${dateFromDoy(minD)} · <b>${minV.toFixed(0)}%</b></div>
-            </div>
-            <div class="tiny muted" style="margin-top:10px;">Tip: tocá otra ventana para comparar rápido.</div>
-          `;
-        }
-      }else{
-        el.windowSummary.style.display = "none";
-        el.windowSummary.innerHTML = "";
-      }
-    }
   }
 
   function recomputeAndRender(){
     renderGroupSelect();
+    el.sortPeople.value = sortMode;
     renderPeopleList();
     computeBand();
     renderAxis();
@@ -1278,32 +1547,23 @@ Esto no se puede deshacer.`);
   // ---------- Safety: basic HTML escape ----------
   function escapeHtml(s){
     return String(s)
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
-      .replace(/'/g,"&#039;");
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
   }
 
   // ---------- Actions ----------
   el.groupSelect.addEventListener("change", () => {
     state.selectedGroupId = el.groupSelect.value;
     state.data.lastGroupId = state.selectedGroupId;
-
-    // restore last day per group (or keep current if none)
-    const g = currentGroup();
-    setSelectedDoy(g.lastDoy || 1, false);
-    el.doyRange.value = String(state.selectedDoy);
-
-    clearSelectedWindow();
     saveData();
     recomputeAndRender();
   });
 
   el.sortPeople.addEventListener("change", () => {
-    const g = currentGroup();
-    g.sort = el.sortPeople.value;
-    saveData();
+    sortMode = el.sortPeople.value;
     renderPeopleList();
   });
 
@@ -1456,7 +1716,6 @@ Esto no se puede deshacer.`);
   });
 
   el.windowLen.addEventListener("change", () => {
-    clearSelectedWindow();
     renderWindows();
   });
 
@@ -1572,11 +1831,85 @@ el.importBtn.addEventListener("click", () => {
 
   // ---------- Init ----------
   ensureSelectedGroup();
-  const g0 = currentGroup();
-  setSelectedDoy(g0.lastDoy || dayOfYearToday(), false);
+  state.selectedDoy = dayOfYearToday();
   el.doyRange.value = String(state.selectedDoy);
   recomputeAndRender();
 
+
+  // --- About modal (Qué es y qué no es) ---
+  window.addEventListener("DOMContentLoaded", ()=>{
+    const btn = document.getElementById("aboutBtn");
+    const overlay = document.getElementById("aboutOverlay");
+    const closeBtn = document.getElementById("aboutClose");
+
+    if(!btn || !overlay || !closeBtn) return;
+
+    function open(){
+      overlay.classList.add("show");
+      closeBtn.focus?.();
+    }
+    function close(){
+      overlay.classList.remove("show");
+      btn.focus?.();
+    }
+
+    btn.addEventListener("click", open);
+    closeBtn.addEventListener("click", close);
+
+    overlay.addEventListener("click", (e)=>{
+      if(e.target === overlay) close();
+    });
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape" && overlay.classList.contains("show")) close();
+    });
+  });
+
 </script>
+
+  <!-- About modal -->
+  <div class="aboutOverlay" id="aboutOverlay" aria-hidden="true">
+
+        <div class="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+          <div class="aboutHeader">
+            <div class="aboutTitle" id="aboutTitle">Qué es y qué no es</div>
+          </div>
+
+          <div class="aboutBody">
+            <p><strong>🌱 Energía del Grupo</strong> es una herramienta <strong>simple y visual</strong> para observar cómo varía el ritmo anual de una persona o de un grupo a lo largo de un año genérico (365 días).</p>
+
+            <p>La idea <strong>no es predecir el futuro</strong>. Es una forma de ayudar a elegir mejores momentos para organizar encuentros, iniciar proyectos o simplemente mirar los ritmos personales y colectivos.</p>
+
+            <h4>✅ Qué sí es</h4>
+            <ul>
+              <li>Una visualización clara del <strong>promedio del grupo</strong> a lo largo del año.</li>
+              <li>Una ayuda para pensar <strong>timing</strong> y conversar decisiones con más contexto.</li>
+              <li>Una herramienta liviana: funciona en PC y celular, <strong>sin cuentas</strong>.</li>
+            </ul>
+
+            <h4>🚫 Qué no es</h4>
+            <ul>
+              <li>No predice eventos.</li>
+              <li>No garantiza resultados.</li>
+              <li>No reemplaza decisiones personales, médicas, legales ni financieras.</li>
+            </ul>
+
+            <h4>🔒 Privacidad</h4>
+            <ul>
+              <li>Los datos se guardan <strong>solo en tu navegador</strong> (local).</li>
+              <li>No hay servidores, bases de datos ni cuentas.</li>
+              <li>Si querés compartirlo, podés exportar/importar un archivo manualmente.</li>
+            </ul>
+
+            <p style="margin-top:14px; opacity:.9">Si te sirve, genial. Y si no, no pasa nada 🙂</p>
+          </div>
+
+          <div class="aboutFooter">
+            <button class="secondary" id="aboutClose" type="button">Cerrar</button>
+          </div>
+        </div>
+
+      </div>
+  </div>
+
 </body>
 </html>
